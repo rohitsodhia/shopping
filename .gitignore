@@ -1,0 +1,25 @@
+# Editor
+.vscode/
+.idea/
+
+# File types
+*.ods
+*.csv
+*.txt
+*.psd
+*.ai
+*.doc
+*.pdf
+*.sql
+*.zip
+styles/**/*.css
+
+# Specific files
+.env
+compose.override.yml
+
+# Folders
+.venv
+logs/
+.pytest_cache
+__pycache__
