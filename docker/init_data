@@ -1,0 +1,5 @@
+#!/bin/bash
+
+docker exec -w /usr/src/app/scripts shopping-api './clear_db.py'
+docker exec -w /usr/src/app/src shopping-api ./manage.py migrate
+docker exec -w /usr/src/app/scripts shopping-api './populate_db.py'

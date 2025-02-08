@@ -1,0 +1,21 @@
+services:
+    proxy:
+        ports:
+            - 80:80
+
+    api:
+        command: uv run uvicorn --factory main:create_app --host 0.0.0.0 --reload --timeout-keep-alive 600
+        volumes:
+            - ./api/src:/app/src
+        stdin_open: true
+        tty: true
+
+    postgres:
+        ports:
+            - 5432:5432
+        environment:
+            - POSTGRES_PASSWORD=test123
+
+    frontend:
+        build:
+            target: dev

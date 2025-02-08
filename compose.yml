@@ -1,0 +1,42 @@
+volumes:
+    postgres_db:
+        driver: local
+        name: shopping_postgres_db
+
+services:
+    proxy:
+        container_name: shopping-proxy
+        volumes:
+            - ./docker/nginx/nginx.${ENVIRONMENT}.conf:/etc/nginx/conf.d/site.conf
+        depends_on:
+            - api
+            - frontend
+
+    api:
+        container_name: shopping-api
+        build:
+            context: ./api
+        ports:
+            - 8000:8000
+        env_file:
+            - ./.env
+        depends_on:
+            - postgres
+        restart: always
+
+    postgres:
+        image: postgres:16.4
+        environment:
+            - POSTGRES_USER=${DATABASE_USER}
+            - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+            - POSTGRES_DB=${DATABASE_DATABASE}
+        volumes:
+            - postgres_db:/var/lib/postgresql/data
+
+    frontend:
+        build:
+            context: ./frontend
+            target: ${ENVIRONMENT}
+            dockerfile: ../docker/Dockerfile-nextjs
+        volumes:
+                - ./frontend:/app
