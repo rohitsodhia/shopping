@@ -5,7 +5,7 @@ volumes:
 
 services:
     proxy:
-        container_name: shopping-proxy
+        image: nginx:1.26
         volumes:
             - ./docker/nginx/nginx.${ENVIRONMENT}.conf:/etc/nginx/conf.d/site.conf
         depends_on:
