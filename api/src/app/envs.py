@@ -4,6 +4,7 @@ ENVIRONMENT = os.getenv("ENVIRONMENT", "dev")
 
 HOST_NAME = os.getenv("HOST_NAME")
 
+PASSWORD_HASH: str = os.getenv("PASSWORD_HASH", "")
 JWT_ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
 JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
 

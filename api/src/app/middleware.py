@@ -2,12 +2,9 @@ import jwt
 from fastapi import HTTPException, Request, status
 
 from app import envs
-from app.database import DBSessionDependency
-from app.models import User
-from app.repositories.user_repository import UserRepository
 
 
-async def validate_jwt(request: Request, db_session: DBSessionDependency):
+async def validate_jwt(request: Request):
     token = request.headers.get("Authorization")
     request.scope["auth"] = None
     request.scope["user"] = None
@@ -19,11 +16,7 @@ async def validate_jwt(request: Request, db_session: DBSessionDependency):
                 envs.JWT_SECRET_KEY,
                 algorithms=[envs.JWT_ALGORITHM],
             )
-            user_repo = UserRepository(db_session)
-            user = await user_repo.get_user(jwt_body["user_id"])
-            if user:
-                request.scope["auth"] = await user.awaitable_attrs.permissions
-                request.scope["user"] = user
+            request.scope["user"] = "valid"
         except:
             pass
 
