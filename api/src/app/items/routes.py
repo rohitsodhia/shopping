@@ -37,3 +37,28 @@ async def add_item(item_input: schemas.NewItemInput, db_session: DBSessionDepend
             }
         }
 
+
+@items.get(
+    "/",
+    response_model=schemas.ListItemsResponse,
+)
+async def list_items(
+    db_session: DBSessionDependency, page: int | None = None, search: str | None = None
+):
+    item_repository = ItemRepository(db_session)
+    if not page or page < 1:
+        page = 1
+    try:
+        items = await item_repository.get_items(name_like=search)
+    except:
+        return error_response(
+            status_code=status.HTTP_400_BAD_REQUEST,
+        )
+
+    if items:
+        return {
+            "data": {
+                "items": list(items),
+                "page": page,
+            },
+        }

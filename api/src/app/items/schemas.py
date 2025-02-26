@@ -17,3 +17,11 @@ class NewItemResponseData(BaseModel):
 class NewItemResponse(BaseModel):
     data: NewItemResponseData
 
+
+class ListItemsResponseData(BaseModel):
+    items: list[Item]
+    page: int
+
+
+class ListItemsResponse(BaseModel):
+    data: ListItemsResponseData
