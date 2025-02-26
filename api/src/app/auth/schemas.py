@@ -9,5 +9,9 @@ class AuthResponse(BaseModel):
     jwt: str
 
 
-class AuthFailed(BaseModel):
+class AuthFailedErrors(BaseModel):
     invalid: bool = True
+
+
+class AuthFailed(BaseModel):
+    errors: AuthFailedErrors
