@@ -11,7 +11,7 @@ items = APIRouter(prefix="/items")
 
 
 @items.post(
-    "/",
+    "",
     response_model=schemas.NewItemResponse,
 )
 async def add_item(item_input: schemas.NewItemInput, db_session: DBSessionDependency):
@@ -39,7 +39,7 @@ async def add_item(item_input: schemas.NewItemInput, db_session: DBSessionDepend
 
 
 @items.get(
-    "/",
+    "",
     response_model=schemas.ListItemsResponse,
 )
 async def list_items(
