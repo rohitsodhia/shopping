@@ -20,7 +20,7 @@ async def add_item(item_input: schemas.NewItemInput, db_session: DBSessionDepend
         item = await item_repository.create_item(Item(name=item_input.name))
     except ItemAlreadyExists as e:
         return error_response(
-            status_code=status.HTTP_400_BAD_REQUEST,
+            status_code=400,
             content={
                 "item": dict_from_schema(e.item, schemas.Item),
                 "error": "already_exists",
@@ -52,7 +52,7 @@ async def list_items(
         items = await item_repository.get_items(name_like=search)
     except:
         return error_response(
-            status_code=status.HTTP_400_BAD_REQUEST,
+            status_code=404,
         )
 
     if items:
