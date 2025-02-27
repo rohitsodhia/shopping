@@ -39,3 +39,8 @@ class ItemRepository:
 
         items = await self.db_session.scalars(statement)
         return items.all()
+
+    async def get_item_by_id(self, id: int) -> Item | None:
+        statement = ()
+        item = await self.db_session.scalar(select(Item).filter(Item.id == id).limit(1))
+        return item

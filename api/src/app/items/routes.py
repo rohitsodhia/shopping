@@ -55,3 +55,27 @@ async def list_items(
                 "page": page,
             },
         }
+
+
+@items.get(
+    "/{item_id}",
+    response_model=schemas.GetItemResponse,
+)
+async def get_item(db_session: DBSessionDependency, item_id: int):
+    item_repository = ItemRepository(db_session)
+    try:
+        item = await item_repository.get_item_by_id(item_id)
+    except:
+        return error_response(
+            status_code=404,
+        )
+
+    if not item:
+        return error_response(
+            status_code=404, content={"not_found": {"details": "Item not found"}}
+        )
+    return {
+        "data": {
+            "item": dict_from_schema(item, schemas.Item),
+        },
+    }

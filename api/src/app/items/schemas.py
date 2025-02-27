@@ -25,3 +25,11 @@ class ListItemsResponseData(BaseModel):
 
 class ListItemsResponse(BaseModel):
     data: ListItemsResponseData
+
+
+class GetItemResponseData(BaseModel):
+    item: Item | None
+
+
+class GetItemResponse(BaseModel):
+    data: GetItemResponseData
