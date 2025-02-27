@@ -1,4 +1,4 @@
-from fastapi import APIRouter, status
+from fastapi import APIRouter
 
 from app.database import DBSessionDependency
 from app.helpers.functions import dict_from_schema, error_response
