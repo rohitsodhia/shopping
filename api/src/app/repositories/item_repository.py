@@ -6,7 +6,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.envs import PAGINATE_PER_PAGE
-from app.exceptions import ItemAlreadyExists
+from app.items.exceptions import ItemAlreadyExists
 from app.models import Item
 
 

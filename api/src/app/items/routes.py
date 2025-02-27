@@ -1,9 +1,9 @@
 from fastapi import APIRouter, status
 
 from app.database import DBSessionDependency
-from app.exceptions import ItemAlreadyExists
 from app.helpers.functions import dict_from_schema, error_response
 from app.items import schemas
+from app.items.exceptions import ItemAlreadyExists
 from app.models.item import Item
 from app.repositories import ItemRepository
 
