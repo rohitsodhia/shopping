@@ -28,14 +28,7 @@ async def add_item(item_input: schemas.NewItemInput, db_session: DBSessionDepend
         )
 
     if item:
-        return {
-            "data": {
-                "item": {
-                    "id": item.id,
-                    "name": item.name,
-                }
-            }
-        }
+        return {"data": {"item": dict_from_schema(item, schemas.Item)}}
 
 
 @items.get(
