@@ -1,9 +1,9 @@
 from fastapi import APIRouter
 
 from app.database import DBSessionDependency
+from app.exceptions import AlreadyExists
 from app.helpers.functions import dict_from_schema, error_response
 from app.items import schemas
-from app.items.exceptions import ItemAlreadyExists
 from app.models.item import Item
 from app.repositories import ItemRepository
 
@@ -18,11 +18,11 @@ async def add_item(item_input: schemas.NewItemInput, db_session: DBSessionDepend
     item_repository = ItemRepository(db_session)
     try:
         item = await item_repository.create_item(Item(name=item_input.name))
-    except ItemAlreadyExists as e:
+    except AlreadyExists as e:
         return error_response(
             status_code=400,
             content={
-                "item": dict_from_schema(e.item, schemas.Item),
+                "item": dict_from_schema(e.cls, schemas.Item),
                 "error": "already_exists",
             },
         )

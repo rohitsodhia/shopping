@@ -6,7 +6,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.envs import PAGINATE_PER_PAGE
-from app.items.exceptions import ItemAlreadyExists
+from app.exceptions import AlreadyExists
 from app.models import Item
 
 
@@ -20,7 +20,7 @@ class ItemRepository:
         )
         if db_check:
             item = db_check
-            raise ItemAlreadyExists(item)
+            raise AlreadyExists(item)
 
         self.db_session.add(item)
         await self.db_session.commit()
