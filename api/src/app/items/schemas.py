@@ -8,6 +8,7 @@ class NewItemInput(BaseModel):
 class Item(BaseModel):
     id: int
     name: str
+    notes: str = ""
 
 
 class NewItemResponseData(BaseModel):
@@ -32,4 +33,17 @@ class GetItemResponseData(BaseModel):
 
 
 class GetItemResponse(BaseModel):
+    data: GetItemResponseData
+
+
+class ItemInput(BaseModel):
+    name: str | None = None
+    notes: str | None = None
+
+
+class UpdateItemResponseData(BaseModel):
+    item: Item
+
+
+class UpdateItemResponse(BaseModel):
     data: GetItemResponseData

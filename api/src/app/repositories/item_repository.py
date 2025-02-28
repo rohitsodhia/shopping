@@ -44,3 +44,7 @@ class ItemRepository:
         statement = ()
         item = await self.db_session.scalar(select(Item).filter(Item.id == id).limit(1))
         return item
+
+    async def update(self, item: Item):
+        self.db_session.add(item)
+        await self.db_session.commit()

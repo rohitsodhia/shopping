@@ -45,7 +45,7 @@ async def list_items(
         items = await item_repository.get_items(name_like=search)
     except:
         return error_response(
-            status_code=404,
+            status_code=400,
         )
 
     if items:
@@ -67,13 +67,52 @@ async def get_item(db_session: DBSessionDependency, item_id: int):
         item = await item_repository.get_item_by_id(item_id)
     except:
         return error_response(
-            status_code=404,
+            status_code=400,
         )
 
     if not item:
         return error_response(
             status_code=404, content={"not_found": {"details": "Item not found"}}
         )
+    return {
+        "data": {
+            "item": dict_from_schema(item, schemas.Item),
+        },
+    }
+
+
+@items.patch(
+    "/{item_id}",
+    response_model=schemas.GetItemResponse,
+)
+async def update_item(
+    item_id: int, item_input: schemas.ItemInput, db_session: DBSessionDependency
+):
+    item_repository = ItemRepository(db_session)
+
+    if not item_input.name and not item_input.notes:
+        return error_response(
+            status_code=400,
+            content={"error": "Nothing to update"},
+        )
+
+    try:
+        item = await item_repository.get_item_by_id(item_id)
+        if not item:
+            return error_response(
+                status_code=404, content={"not_found": {"details": "Item not found"}}
+            )
+        if item_input.name:
+            item.name = item_input.name
+        if item_input.notes:
+            item.notes = item_input.notes
+        await item_repository.update(item)
+    except Exception as e:
+        print(e)
+        return error_response(
+            status_code=400,
+        )
+
     return {
         "data": {
             "item": dict_from_schema(item, schemas.Item),
