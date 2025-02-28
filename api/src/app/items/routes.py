@@ -17,7 +17,7 @@ items = APIRouter(prefix="/items")
 async def add_item(item_input: schemas.NewItemInput, db_session: DBSessionDependency):
     item_repository = ItemRepository(db_session)
     try:
-        item = await item_repository.create_item(Item(name=item_input.name))
+        item = await item_repository.create(Item(name=item_input.name))
     except AlreadyExists as e:
         return error_response(
             status_code=400,
@@ -42,7 +42,7 @@ async def list_items(
     if not page or page < 1:
         page = 1
     try:
-        items = await item_repository.get_items(name_like=search)
+        items = await item_repository.get_all(name_like=search)
     except:
         return error_response(
             status_code=400,
@@ -64,7 +64,7 @@ async def list_items(
 async def get_item(db_session: DBSessionDependency, item_id: int):
     item_repository = ItemRepository(db_session)
     try:
-        item = await item_repository.get_item_by_id(item_id)
+        item = await item_repository.get_by_id(item_id)
     except:
         return error_response(
             status_code=400,
@@ -97,7 +97,7 @@ async def update_item(
         )
 
     try:
-        item = await item_repository.get_item_by_id(item_id)
+        item = await item_repository.get_by_id(item_id)
         if not item:
             return error_response(
                 status_code=404, content={"not_found": {"details": "Item not found"}}

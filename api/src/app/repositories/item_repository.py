@@ -14,7 +14,7 @@ class ItemRepository:
     def __init__(self, db_session: AsyncSession):
         self.db_session = db_session
 
-    async def create_item(self, item: Item):
+    async def create(self, item: Item):
         db_check = await self.db_session.scalar(
             select(Item).where(Item.name == item.name).limit(1)
         )
@@ -26,7 +26,7 @@ class ItemRepository:
         await self.db_session.commit()
         return item
 
-    async def get_items(
+    async def get_all(
         self, page: int = 1, name_like: str | None = None
     ) -> Sequence[Item]:
         if page < 1:
@@ -40,8 +40,7 @@ class ItemRepository:
         items = await self.db_session.scalars(statement)
         return items.all()
 
-    async def get_item_by_id(self, id: int) -> Item | None:
-        statement = ()
+    async def get_by_id(self, id: int) -> Item | None:
         item = await self.db_session.scalar(select(Item).filter(Item.id == id).limit(1))
         return item
 
