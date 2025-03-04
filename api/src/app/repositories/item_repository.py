@@ -19,8 +19,7 @@ class ItemRepository:
             select(Item).where(Item.name == item.name).limit(1)
         )
         if db_check:
-            item = db_check
-            raise AlreadyExists(item)
+            raise AlreadyExists(db_check)
 
         self.db_session.add(item)
         await self.db_session.commit()
