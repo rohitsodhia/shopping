@@ -1,7 +1,7 @@
 import datetime
 from typing import TYPE_CHECKING
 
-from sqlalchemy import Date, ForeignKey, Integer, Text, func
+from sqlalchemy import DateTime, ForeignKey, Integer, Text, func
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -15,12 +15,14 @@ class Purchase(Base):
     __tablename__ = "purchases"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    item_id: Mapped[int] = mapped_column(ForeignKey("items.id"), nullable=False)
-    _price: Mapped[int] = mapped_column("price", Integer(), nullable=False)
-    date: Mapped[datetime.datetime] = mapped_column(Date(), insert_default=func.now())
-    store_id: Mapped[int] = mapped_column(ForeignKey("stores.id"), nullable=False)
+    item_id: Mapped[int] = mapped_column(ForeignKey("items.id"))
+    _price: Mapped[int] = mapped_column("price", Integer())
+    when: Mapped[datetime.datetime] = mapped_column(
+        DateTime(), insert_default=func.now()
+    )
+    store_id: Mapped[int] = mapped_column(ForeignKey("stores.id"))
     store: Mapped["Store"] = relationship(back_populates="purchases")
-    notes: Mapped[str] = mapped_column(Text())
+    notes: Mapped[str] = mapped_column(Text(), nullable=True)
 
     @hybrid_property
     def price(self):
@@ -28,4 +30,4 @@ class Purchase(Base):
 
     @price.inplace.setter
     def set_price(self, value):
-        self._price = value * 100
+        self._price = round(value, 2) * 100
