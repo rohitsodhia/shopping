@@ -5,7 +5,7 @@ class ValidationError(Exception):
         super().__init__(message)
 
 
-class AlreadyExists(Exception):
-    def __init__(self, cls) -> None:
+class AlreadyExists[T](Exception):
+    def __init__(self, cls: T) -> None:
         super().__init__("{type(cls).__name__} already exists")
         self.cls = cls
