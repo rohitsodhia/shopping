@@ -8,7 +8,7 @@ class NewItemInput(BaseModel):
 class Item(BaseModel):
     id: int
     name: str
-    notes: str = ""
+    notes: str | None = None
 
 
 class NewItemResponseData(BaseModel):

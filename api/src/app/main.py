@@ -7,6 +7,7 @@ from app import middleware
 from app.auth.routes import auth
 from app.database import get_db_session
 from app.items.routes import items
+from app.purchases.routes import purchases
 
 seed()
 
@@ -27,5 +28,6 @@ def create_app():
 
     app.include_router(auth)
     app.include_router(items)
+    app.include_router(purchases)
 
     return app
