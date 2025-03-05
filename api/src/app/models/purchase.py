@@ -22,7 +22,7 @@ class Purchase(Base):
     )
     store_id: Mapped[int] = mapped_column(ForeignKey("stores.id"))
     store: Mapped["Store"] = relationship(back_populates="purchases")
-    notes: Mapped[str] = mapped_column(Text(), nullable=True)
+    notes: Mapped[str | None] = mapped_column(Text(), nullable=True)
 
     @hybrid_property
     def price(self):
