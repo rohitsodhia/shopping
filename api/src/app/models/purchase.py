@@ -1,14 +1,13 @@
-import datetime
 from typing import TYPE_CHECKING
 
-from sqlalchemy import DateTime, ForeignKey, Integer, Text, func
+from sqlalchemy import ForeignKey, Integer, Text
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models.base import Base
 
 if TYPE_CHECKING:
-    from app.models import Store
+    from app.models import Receipt
 
 
 class Purchase(Base):
@@ -16,12 +15,9 @@ class Purchase(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     item_id: Mapped[int] = mapped_column(ForeignKey("items.id"))
+    receipt_id: Mapped[int] = mapped_column(ForeignKey("receipts.id"))
+    receipt: Mapped["Receipt"] = relationship(back_populates="purchases")
     _price: Mapped[int] = mapped_column("price", Integer())
-    when: Mapped[datetime.datetime] = mapped_column(
-        DateTime(), insert_default=func.now()
-    )
-    store_id: Mapped[int] = mapped_column(ForeignKey("stores.id"))
-    store: Mapped["Store"] = relationship(back_populates="purchases")
     notes: Mapped[str | None] = mapped_column(Text(), nullable=True)
 
     @hybrid_property
