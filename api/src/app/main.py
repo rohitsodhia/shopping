@@ -8,6 +8,7 @@ from app.auth.routes import auth
 from app.database import get_db_session
 from app.items.routes import items
 from app.purchases.routes import purchases
+from app.receipts.routes import receipts
 from app.stores.routes import stores
 
 seed()
@@ -31,5 +32,6 @@ def create_app():
     app.include_router(items)
     app.include_router(purchases)
     app.include_router(stores)
+    app.include_router(receipts)
 
     return app
