@@ -55,3 +55,37 @@ async def add_purchase(
     purchase = await purchase_repository.create(purchase)
     return {"data": {"purchase": dict_from_schema(purchase, schemas.Purchase)}}
 
+
+@purchases.patch(
+    "/{purchase_id}",
+    response_model=schemas.UpdatePurchaseResponse,
+)
+async def update_purchase(
+    purchase_id: int,
+    purchase_input: schemas.PurchaseInput,
+    db_session: DBSessionDependency,
+):
+    purchase_repository = PurchaseRepository(db_session)
+
+    try:
+        purchase = await purchase_repository.get_by_id(purchase_id, get_store=True)
+        if not purchase:
+            return error_response(
+                status_code=404,
+                content={"not_found": {"details": "Purchase not found"}},
+            )
+        if purchase_input.price:
+            purchase.price = purchase_input.price
+        purchase.notes = purchase_input.notes
+        await purchase_repository.update(purchase)
+    except Exception as e:
+        print(e)
+        return error_response(
+            status_code=400,
+        )
+
+    return {
+        "data": {
+            "purchase": dict_from_schema(purchase, schemas.Purchase),
+        },
+    }

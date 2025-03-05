@@ -24,10 +24,19 @@ class Purchase(BaseModel):
     notes: str | None = None
 
 
-class NewPurchaseResponseData(BaseModel):
+class PurchaseResponseData(BaseModel):
     purchase: Purchase
 
 
 class NewPurchaseResponse(BaseModel):
-    data: NewPurchaseResponseData
+    data: PurchaseResponseData
 
+
+class PurchaseInput(BaseModel):
+    purchase_id: int
+    price: float
+    notes: str | None = None
+
+
+class UpdatePurchaseResponse(BaseModel):
+    data: PurchaseResponseData
