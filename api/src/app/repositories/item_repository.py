@@ -46,5 +46,4 @@ class ItemRepository:
         return item
 
     async def update(self, item: Item):
-        self.db_session.add(item)
         await self.db_session.commit()

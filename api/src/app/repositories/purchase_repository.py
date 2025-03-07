@@ -40,5 +40,4 @@ class PurchaseRepository:
         return item
 
     async def update(self, purchase: Purchase):
-        self.db_session.add(purchase)
         await self.db_session.commit()
