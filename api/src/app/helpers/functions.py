@@ -4,9 +4,9 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
 
-def error_response(status_code: int, content: dict | None = None) -> JSONResponse:
+def error_response(status_code: int, content: list | None = None) -> JSONResponse:
     if content == None:
-        content = {}
+        content = []
     return JSONResponse(status_code=status_code, content={"errors": content})
 
 
