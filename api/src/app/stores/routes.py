@@ -56,6 +56,7 @@ async def list_stores(db_session: DBSessionDependency, page: int = 1):
             "data": {
                 "stores": list(stores),
                 "page": page,
+                "total": await store_repository.count(),
             },
         }
 

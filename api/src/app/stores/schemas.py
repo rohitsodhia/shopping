@@ -21,6 +21,7 @@ class StoreResponse(BaseModel):
 class ListStoresResponseData(BaseModel):
     stores: list[Store]
     page: int
+    total: int
 
 
 class ListStoresResponse(BaseModel):

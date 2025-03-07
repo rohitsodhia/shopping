@@ -26,6 +26,9 @@ class StoreRepository:
         await self.db_session.commit()
         return store
 
+    async def count(self):
+        return await self.db_session.scalar(select(func.count(Store.id)))
+
     async def get_all(self, page: int = 1) -> Sequence[Store]:
         page = int(page)
         if page < 1:
@@ -46,5 +49,13 @@ class StoreRepository:
         return item
 
     async def update(self, store: Store):
-        self.db_session.add(store)
+        store.name = store.name.strip()
+        db_check = await self.db_session.scalar(
+            select(Store).where(func.lower(Store.name) == store.name.lower()).limit(1)
+        )
+        from icecream import ic
+
+        if db_check and db_check.id != store.id:
+            raise AlreadyExists(db_check)
+
         await self.db_session.commit()
