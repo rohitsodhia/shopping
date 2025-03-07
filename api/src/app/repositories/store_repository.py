@@ -27,6 +27,7 @@ class StoreRepository:
         return store
 
     async def get_all(self, page: int = 1) -> Sequence[Store]:
+        page = int(page)
         if page < 1:
             page = 1
 

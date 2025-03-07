@@ -28,8 +28,10 @@ class ItemRepository:
     async def get_all(
         self, page: int = 1, name_like: str | None = None
     ) -> Sequence[Item]:
+        page = int(page)
         if page < 1:
             page = 1
+
         statement = (
             select(Item).limit(PAGINATE_PER_PAGE).offset((page - 1) * PAGINATE_PER_PAGE)
         )

@@ -20,6 +20,7 @@ class PurchaseRepository:
         return purchase
 
     async def get_all(self, page: int = 1) -> Sequence[Purchase]:
+        page = int(page)
         if page < 1:
             page = 1
 
