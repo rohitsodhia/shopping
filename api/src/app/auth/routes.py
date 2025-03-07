@@ -9,7 +9,7 @@ from app.auth import schemas
 from app.database import DBSessionDependency
 from app.envs import PASSWORD_HASH
 from app.helpers.decorators import public
-from app.helpers.functions import error_response
+from app.helpers.response_errors import error_response
 
 auth = APIRouter(prefix="/auth")
 
