@@ -37,10 +37,13 @@ async def add_store(store_input: schemas.StoreInput, db_session: DBSessionDepend
     "",
     response_model=schemas.ListStoresResponse,
 )
-async def list_stores(db_session: DBSessionDependency, page: int | None = None):
+async def list_stores(db_session: DBSessionDependency, page: int = 1):
     store_repository = StoreRepository(db_session)
-    if not page or page < 1:
+
+    page = int(page)
+    if page < 1:
         page = 1
+
     try:
         stores = await store_repository.get_all()
     except:
