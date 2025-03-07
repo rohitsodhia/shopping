@@ -82,8 +82,17 @@ async def update_store(
             return error_response(status_code=404, content=[{"error": "not_found"}])
         store.name = store_input.name
         await store_repository.update(store)
+    except AlreadyExists as e:
+        return error_response(
+            status_code=400,
+            content=[
+                {
+                    "store": dict_from_schema(e.cls, schemas.Store),
+                    "error": "already_exists",
+                }
+            ],
+        )
     except Exception as e:
-        print(e)
         return error_response(
             status_code=400,
         )
