@@ -3,7 +3,12 @@ from fastapi import APIRouter
 from app.database import DBSessionDependency
 from app.exceptions import AlreadyExists
 from app.helpers.functions import dict_from_schema
-from app.helpers.response_errors import already_exists_error, error_response
+from app.helpers.response_errors import (
+    already_exists_error,
+    error_response,
+    fields_missing_response,
+    not_found_response,
+)
 from app.models.store import Store
 from app.repositories import StoreRepository
 from app.stores import schemas
@@ -67,15 +72,12 @@ async def update_store(
     store_repository = StoreRepository(db_session)
 
     if not store_input.name:
-        return error_response(
-            status_code=400,
-            content=[{"error": "no_data"}],
-        )
+        return fields_missing_response(["name"])
 
     try:
         store = await store_repository.get_by_id(store_id)
         if not store:
-            return error_response(status_code=404, content=[{"error": "not_found"}])
+            return not_found_response()
         store.name = store_input.name
         await store_repository.update(store)
     except AlreadyExists as e:

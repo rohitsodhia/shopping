@@ -7,6 +7,10 @@ def error_response(status_code: int, content: list | None = None) -> JSONRespons
     return JSONResponse(status_code=status_code, content={"errors": content})
 
 
+def not_found_response():
+    return error_response(status_code=404, content=[{"error": "not_found"}])
+
+
 def already_exists_error(obj: dict) -> dict:
     return {
         "error": "already_exists",
