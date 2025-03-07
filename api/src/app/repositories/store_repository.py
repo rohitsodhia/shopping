@@ -53,8 +53,6 @@ class StoreRepository:
         db_check = await self.db_session.scalar(
             select(Store).where(func.lower(Store.name) == store.name.lower()).limit(1)
         )
-        from icecream import ic
-
         if db_check and db_check.id != store.id:
             raise AlreadyExists(db_check)
 
