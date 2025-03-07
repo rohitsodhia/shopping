@@ -11,6 +11,13 @@ def not_found_response():
     return error_response(status_code=404, content=[{"error": "not_found"}])
 
 
+def fields_missing_response(fields: list[str]) -> JSONResponse:
+    return error_response(
+        status_code=400,
+        content=[{"error": "missing_fields", "fields": fields}],
+    )
+
+
 def already_exists_error(obj: dict) -> dict:
     return {
         "error": "already_exists",
