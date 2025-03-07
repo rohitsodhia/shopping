@@ -11,39 +11,28 @@ class Item(BaseModel):
     notes: str | None = None
 
 
-class NewItemResponseData(BaseModel):
+class ItemResponseData(BaseModel):
     item: Item
 
 
-class NewItemResponse(BaseModel):
-    data: NewItemResponseData
+class ItemResponse(BaseModel):
+    data: ItemResponseData
 
 
 class ListItemsResponseData(BaseModel):
     items: list[Item]
     page: int
+    total: int
 
 
 class ListItemsResponse(BaseModel):
     data: ListItemsResponseData
 
 
-class GetItemResponseData(BaseModel):
-    item: Item | None
-
-
 class GetItemResponse(BaseModel):
-    data: GetItemResponseData
+    data: ItemResponseData
 
 
 class ItemInput(BaseModel):
     name: str | None = None
     notes: str | None = None
-
-
-class UpdateItemResponseData(BaseModel):
-    item: Item
-
-
-class UpdateItemResponse(BaseModel):
-    data: GetItemResponseData

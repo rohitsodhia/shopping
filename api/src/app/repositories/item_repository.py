@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Sequence
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.envs import PAGINATE_PER_PAGE
@@ -25,6 +25,12 @@ class ItemRepository:
         await self.db_session.commit()
         return item
 
+    async def count(self, name_like: str | None = None) -> int:
+        statement = select(func.count(Item.id))
+        if name_like:
+            statement = statement.where(Item.name.like(f"%{name_like}%"))
+        return await self.db_session.scalar(statement)  # type: ignore
+
     async def get_all(
         self, page: int = 1, name_like: str | None = None
     ) -> Sequence[Item]:
@@ -46,4 +52,11 @@ class ItemRepository:
         return item
 
     async def update(self, item: Item):
+        item.name = item.name.strip()
+        db_check = await self.db_session.scalar(
+            select(Item).where(func.lower(Item.name) == item.name.lower()).limit(1)
+        )
+        if db_check and db_check.id != item.id:
+            raise AlreadyExists(db_check)
+
         await self.db_session.commit()

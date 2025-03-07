@@ -2,7 +2,13 @@ from fastapi import APIRouter
 
 from app.database import DBSessionDependency
 from app.exceptions import AlreadyExists
-from app.helpers.functions import dict_from_schema, error_response
+from app.helpers.functions import dict_from_schema
+from app.helpers.response_errors import (
+    already_exists_error,
+    error_response,
+    fields_missing_response,
+    not_found_response,
+)
 from app.items import schemas
 from app.models.item import Item
 from app.repositories import ItemRepository
@@ -12,7 +18,7 @@ items = APIRouter(prefix="/items")
 
 @items.post(
     "",
-    response_model=schemas.NewItemResponse,
+    response_model=schemas.ItemResponse,
 )
 async def add_item(item_input: schemas.NewItemInput, db_session: DBSessionDependency):
     item_repository = ItemRepository(db_session)
@@ -21,10 +27,7 @@ async def add_item(item_input: schemas.NewItemInput, db_session: DBSessionDepend
     except AlreadyExists as e:
         return error_response(
             status_code=400,
-            content={
-                "item": dict_from_schema(e.cls, schemas.Item),
-                "error": "already_exists",
-            },
+            content=[already_exists_error(dict_from_schema(e.cls, schemas.Item))],
         )
 
     if item:
@@ -41,6 +44,7 @@ async def list_items(
     item_repository = ItemRepository(db_session)
     if not page or page < 1:
         page = 1
+
     try:
         items = await item_repository.get_all(name_like=search)
     except:
@@ -53,6 +57,7 @@ async def list_items(
             "data": {
                 "items": list(items),
                 "page": page,
+                "total": await item_repository.count(name_like=search),
             },
         }
 
@@ -71,9 +76,7 @@ async def get_item(db_session: DBSessionDependency, item_id: int):
         )
 
     if not item:
-        return error_response(
-            status_code=404, content={"not_found": {"details": "Item not found"}}
-        )
+        return not_found_response()
     return {
         "data": {
             "item": dict_from_schema(item, schemas.Item),
@@ -91,24 +94,24 @@ async def update_item(
     item_repository = ItemRepository(db_session)
 
     if not item_input.name and not item_input.notes:
-        return error_response(
-            status_code=400,
-            content={"error": "Nothing to update"},
-        )
+        return fields_missing_response(["name", "notes"])
 
     try:
         item = await item_repository.get_by_id(item_id)
         if not item:
-            return error_response(
-                status_code=404, content={"not_found": {"details": "Item not found"}}
-            )
+            return not_found_response()
+
         if item_input.name:
             item.name = item_input.name
         if item_input.notes:
             item.notes = item_input.notes
         await item_repository.update(item)
+    except AlreadyExists as e:
+        return error_response(
+            status_code=400,
+            content=[already_exists_error(dict_from_schema(e.cls, schemas.Item))],
+        )
     except Exception as e:
-        print(e)
         return error_response(
             status_code=400,
         )
