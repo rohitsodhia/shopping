@@ -2,7 +2,8 @@ from fastapi import APIRouter
 
 from app.database import DBSessionDependency
 from app.exceptions import AlreadyExists
-from app.helpers.functions import dict_from_schema, error_response
+from app.helpers.functions import dict_from_schema
+from app.helpers.response_errors import already_exists_error, error_response
 from app.models.store import Store
 from app.repositories import StoreRepository
 from app.stores import schemas
@@ -21,12 +22,7 @@ async def add_store(store_input: schemas.StoreInput, db_session: DBSessionDepend
     except AlreadyExists as e:
         return error_response(
             status_code=400,
-            content=[
-                {
-                    "store": dict_from_schema(e.cls, schemas.Store),
-                    "error": "already_exists",
-                }
-            ],
+            content=[already_exists_error(dict_from_schema(e.cls, schemas.Store))],
         )
 
     if store:
@@ -85,12 +81,7 @@ async def update_store(
     except AlreadyExists as e:
         return error_response(
             status_code=400,
-            content=[
-                {
-                    "store": dict_from_schema(e.cls, schemas.Store),
-                    "error": "already_exists",
-                }
-            ],
+            content=[already_exists_error(dict_from_schema(e.cls, schemas.Store))],
         )
     except Exception as e:
         return error_response(
