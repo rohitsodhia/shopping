@@ -14,7 +14,7 @@ class ItemRepository:
     def __init__(self, db_session: AsyncSession):
         self.db_session = db_session
 
-    async def create(self, item: Item):
+    async def create(self, item: Item) -> Item:
         db_check = await self.db_session.scalar(
             select(Item).where(Item.name == item.name).limit(1)
         )
