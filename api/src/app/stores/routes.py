@@ -21,10 +21,12 @@ async def add_store(store_input: schemas.StoreInput, db_session: DBSessionDepend
     except AlreadyExists as e:
         return error_response(
             status_code=400,
-            content={
-                "store": dict_from_schema(e.cls, schemas.Store),
-                "error": "already_exists",
-            },
+            content=[
+                {
+                    "store": dict_from_schema(e.cls, schemas.Store),
+                    "error": "already_exists",
+                }
+            ],
         )
 
     if store:
@@ -67,15 +69,13 @@ async def update_store(
     if not store_input.name:
         return error_response(
             status_code=400,
-            content={"error": "Nothing to update"},
+            content=[{"error": "no_data"}],
         )
 
     try:
         store = await store_repository.get_by_id(store_id)
         if not store:
-            return error_response(
-                status_code=404, content={"not_found": {"details": "Store not found"}}
-            )
+            return error_response(status_code=404, content=[{"error": "not_found"}])
         store.name = store_input.name
         await store_repository.update(store)
     except Exception as e:
