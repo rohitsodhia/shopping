@@ -13,7 +13,7 @@ def not_found_response():
 
 def fields_missing_response(fields: list[str]) -> JSONResponse:
     return error_response(
-        status_code=400,
+        status_code=422,
         content=[{"error": "missing_fields", "fields": fields}],
     )
 
