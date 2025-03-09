@@ -22,5 +22,4 @@ async def add_receipt(
         notes=receipt_input.notes,
     )
 
-    if receipt:
-        return {"data": {"receipt": dict_from_schema(receipt, schemas.Receipt)}}
+    return {"data": {"receipt": dict_from_schema(receipt, schemas.Receipt)}}

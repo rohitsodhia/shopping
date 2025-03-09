@@ -30,8 +30,7 @@ async def add_item(item_input: schemas.NewItemInput, db_session: DBSessionDepend
             content=[already_exists_error(dict_from_schema(e.cls, schemas.Item))],
         )
 
-    if item:
-        return {"data": {"item": dict_from_schema(item, schemas.Item)}}
+    return {"data": {"item": dict_from_schema(item, schemas.Item)}}
 
 
 @items.get(
@@ -52,14 +51,13 @@ async def list_items(
             status_code=400,
         )
 
-    if items:
-        return {
-            "data": {
-                "items": list(items),
-                "page": page,
-                "total": await item_repository.count(name_like=search),
-            },
-        }
+    return {
+        "data": {
+            "items": list(items),
+            "page": page,
+            "total": await item_repository.count(name_like=search),
+        },
+    }
 
 
 @items.get(

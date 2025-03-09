@@ -30,8 +30,7 @@ async def add_store(store_input: schemas.StoreInput, db_session: DBSessionDepend
             content=[already_exists_error(dict_from_schema(e.cls, schemas.Store))],
         )
 
-    if store:
-        return {"data": {"store": dict_from_schema(store, schemas.Store)}}
+    return {"data": {"store": dict_from_schema(store, schemas.Store)}}
 
 
 @stores.get(
@@ -52,14 +51,13 @@ async def list_stores(db_session: DBSessionDependency, page: int = 1):
             status_code=400,
         )
 
-    if stores:
-        return {
-            "data": {
-                "stores": list(stores),
-                "page": page,
-                "total": await store_repository.count(),
-            },
-        }
+    return {
+        "data": {
+            "stores": list(stores),
+            "page": page,
+            "total": await store_repository.count(),
+        },
+    }
 
 
 @stores.patch(
