@@ -9,8 +9,7 @@ from app.auth import schemas
 from app.database import DBSessionDependency
 from app.envs import PASSWORD_HASH
 from app.helpers.decorators import public
-from app.helpers.functions import error_response
-from app.schemas import ErrorResponse
+from app.helpers.response_errors import error_response
 
 auth = APIRouter(prefix="/auth")
 
@@ -18,7 +17,7 @@ auth = APIRouter(prefix="/auth")
 @auth.post(
     "/login",
     response_model=schemas.AuthResponse,
-    responses={404: {"model": ErrorResponse(error=schemas.AuthFailed())}},
+    responses={404: {"model": schemas.AuthFailed}},
 )
 @public
 async def login(user_details: schemas.UserInput, db_session: DBSessionDependency):

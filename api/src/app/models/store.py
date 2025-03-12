@@ -6,7 +6,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.models.base import Base
 
 if TYPE_CHECKING:
-    from app.models import Purchase
+    from app.models import Receipt
 
 
 class Store(Base):
@@ -14,4 +14,4 @@ class Store(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(), unique=True)
-    purchases: Mapped[list["Purchase"]] = relationship(back_populates="store")
+    receipts: Mapped[list["Receipt"]] = relationship(back_populates="store")

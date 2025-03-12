@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from sqlalchemy import DateTime, event, func
+from sqlalchemy.ext.asyncio import AsyncAttrs
 from sqlalchemy.orm import (
     DeclarativeBase,
     Mapped,
@@ -12,7 +13,7 @@ from sqlalchemy.orm import (
 from app.database import session_manager
 
 
-class Base(DeclarativeBase):
+class Base(AsyncAttrs, DeclarativeBase):
     pass
 
 

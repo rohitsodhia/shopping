@@ -24,7 +24,7 @@ class DatabaseSessionManager:
             f"postgresql+asyncpg://{DATABASE_USER}:{DATABASE_PASSWORD}@{DATABASE_HOST}/{DATABASE_DATABASE}"
         )
         self._sessionmaker: async_sessionmaker | None = async_sessionmaker(
-            bind=self._engine, autocommit=False, expire_on_commit=False
+            bind=self._engine, autocommit=False, expire_on_commit=False, autoflush=False
         )
 
     async def close(self):
