@@ -1,11 +1,16 @@
 from fastapi import APIRouter
 
 from app.database import DBSessionDependency
-from app.exceptions import AlreadyExists
-from app.helpers.functions import dict_from_schema, error_response
-from app.models import Purchase, Store
+from app.exceptions import IntegrityError
+from app.helpers.functions import dict_from_schema
+from app.helpers.response_errors import (
+    error_response,
+    integrity_error_response,
+    not_found_response,
+)
+from app.models import Purchase
 from app.purchases import schemas
-from app.repositories import ItemRepository, PurchaseRepository, StoreRepository
+from app.repositories import PurchaseRepository
 
 purchases = APIRouter(prefix="/purchases")
 
@@ -34,6 +39,32 @@ async def add_purchase(
     return {"data": {"purchase": dict_from_schema(purchase, schemas.Purchase)}}
 
 
+@purchases.post(
+    "/bulk",
+    response_model=schemas.NewPurchaseBulkResponse,
+)
+async def add_purchase_bulk(
+    purchase_input: schemas.NewPurchaseBulkInput, db_session: DBSessionDependency
+):
+    purchase_repository = PurchaseRepository(db_session)
+
+    purchases_data: list[dict] = []
+    for purchase in purchase_input.purchases:
+        purchases_data.append(
+            Purchase(
+                **dict_from_schema(purchase, schemas.NewPurchaseBulkPurchaseInput),
+                receipt_id=purchase_input.receipt_id
+            ).__dict__
+        )
+
+    purchases = await purchase_repository.bulk_create(purchases_data)
+    return {
+        "data": {
+            "purchases": [dict_from_schema(p, schemas.Purchase) for p in purchases]
+        }
+    }
+
+
 @purchases.patch(
     "/{purchase_id}",
     response_model=schemas.UpdatePurchaseResponse,
@@ -46,12 +77,9 @@ async def update_purchase(
     purchase_repository = PurchaseRepository(db_session)
 
     try:
-        purchase = await purchase_repository.get_by_id(purchase_id, get_store=True)
+        purchase = await purchase_repository.get_by_id(purchase_id)
         if not purchase:
-            return error_response(
-                status_code=404,
-                content={"not_found": {"details": "Purchase not found"}},
-            )
+            return not_found_response()
         if purchase_input.price:
             purchase.price = purchase_input.price
         purchase.notes = purchase_input.notes

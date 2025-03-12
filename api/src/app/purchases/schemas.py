@@ -5,22 +5,16 @@ from app.models import store
 
 class NewPurchaseInput(BaseModel):
     item_id: int
+    receipt_id: int
     price: float
-    store_id: int | None = None
-    store_name: str | None = None
     notes: str | None = None
-
-
-class Store(BaseModel):
-    id: int
-    name: str
 
 
 class Purchase(BaseModel):
     id: int
     item_id: int
+    receipt_id: int
     price: float
-    store: Store
     notes: str | None = None
 
 
@@ -30,6 +24,25 @@ class PurchaseResponseData(BaseModel):
 
 class NewPurchaseResponse(BaseModel):
     data: PurchaseResponseData
+
+
+class NewPurchaseBulkPurchaseInput(BaseModel):
+    item_id: int
+    price: float
+    notes: str | None = None
+
+
+class NewPurchaseBulkInput(BaseModel):
+    receipt_id: int
+    purchases: list[NewPurchaseBulkPurchaseInput]
+
+
+class NewPurchaseBulkData(BaseModel):
+    purchases: list[Purchase]
+
+
+class NewPurchaseBulkResponse(BaseModel):
+    data: NewPurchaseBulkData
 
 
 class PurchaseInput(BaseModel):

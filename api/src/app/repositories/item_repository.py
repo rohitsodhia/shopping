@@ -32,17 +32,29 @@ class ItemRepository:
         return await self.db_session.scalar(statement)  # type: ignore
 
     async def get_all(
-        self, page: int = 1, name_like: str | None = None
+        self,
+        *,
+        fields: list[str] | None = None,
+        page: int = 1,
+        name_like: str | None = None,
+        ids: list[int] | None = None,
     ) -> Sequence[Item]:
         page = int(page)
         if page < 1:
             page = 1
 
-        statement = (
-            select(Item).limit(PAGINATE_PER_PAGE).offset((page - 1) * PAGINATE_PER_PAGE)
+        if fields:
+            statement = select(*[getattr(Item, f) for f in fields])
+        else:
+            statement = select(Item)
+
+        statement = statement.limit(PAGINATE_PER_PAGE).offset(
+            (page - 1) * PAGINATE_PER_PAGE
         )
         if name_like:
             statement = statement.where(Item.name.like(f"%{name_like}%"))
+        if ids:
+            statement = statement.where(Item.id.in_(ids))
 
         items = await self.db_session.scalars(statement)
         return items.all()
