@@ -45,8 +45,7 @@ class NewPurchaseBulkResponse(BaseModel):
     data: NewPurchaseBulkData
 
 
-class PurchaseInput(BaseModel):
-    purchase_id: int
+class UpdatePurchaseInput(BaseModel):
     price: float
     notes: str | None = None
 

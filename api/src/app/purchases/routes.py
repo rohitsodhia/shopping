@@ -71,7 +71,7 @@ async def add_purchase_bulk(
 )
 async def update_purchase(
     purchase_id: int,
-    purchase_input: schemas.PurchaseInput,
+    purchase_input: schemas.UpdatePurchaseInput,
     db_session: DBSessionDependency,
 ):
     purchase_repository = PurchaseRepository(db_session)
