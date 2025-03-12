@@ -9,3 +9,8 @@ class AlreadyExists[T](Exception):
     def __init__(self, cls: T) -> None:
         super().__init__("{type(cls).__name__} already exists")
         self.cls = cls
+
+
+class IntegrityError(Exception):
+    def __init__(self, column: str, insert_id: int) -> None:
+        super().__init__(f"{column} {insert_id} not found")
