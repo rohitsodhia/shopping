@@ -10,17 +10,13 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
-from app.envs import DATABASE_DATABASE, DATABASE_HOST, DATABASE_PASSWORD, DATABASE_USER
-
 
 class DatabaseSessionManager:
-    def __init__(
-        self,
-        host: str = DATABASE_HOST,
-        user: str = DATABASE_USER,
-        password: str = DATABASE_PASSWORD,
-        database: str = DATABASE_DATABASE,
-    ):
+    def __init__(self):
+        self._engine: AsyncEngine | None = None
+        self._sessionmaker: async_sessionmaker | None = None
+
+    def init(self, host: str, user: str, password: str, database: str):
         self._engine: AsyncEngine | None = create_async_engine(
             f"postgresql+asyncpg://{user}:{password}@{host}/{database}"
         )
