@@ -1,7 +1,7 @@
 import jwt
 from fastapi import HTTPException, Request, status
 
-from app import envs
+from app.configs import configs
 
 
 async def validate_jwt(request: Request):
@@ -13,8 +13,8 @@ async def validate_jwt(request: Request):
         try:
             jwt_body = jwt.decode(
                 token,
-                envs.JWT_SECRET_KEY,
-                algorithms=[envs.JWT_ALGORITHM],
+                configs.JWT_SECRET_KEY,
+                algorithms=[configs.JWT_ALGORITHM],
             )
             request.scope["user"] = "valid"
         except:

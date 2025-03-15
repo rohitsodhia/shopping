@@ -7,7 +7,7 @@ from sqlalchemy.exc import IntegrityError as SQLAIntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
-from app.envs import PAGINATE_PER_PAGE
+from app.configs import configs
 from app.exceptions import IntegrityError
 from app.helpers.functions import parse_integrity_error
 from app.models import Purchase
@@ -52,8 +52,8 @@ class PurchaseRepository:
 
         statement = (
             select(Purchase)
-            .limit(PAGINATE_PER_PAGE)
-            .offset((page - 1) * PAGINATE_PER_PAGE)
+            .limit(configs.PAGINATE_PER_PAGE)
+            .offset((page - 1) * configs.PAGINATE_PER_PAGE)
         )
         purchses = await self.db_session.scalars(statement)
         return purchses.all()

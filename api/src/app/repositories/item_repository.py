@@ -5,7 +5,7 @@ from typing import Sequence
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.envs import PAGINATE_PER_PAGE
+from app.configs import configs
 from app.exceptions import AlreadyExists
 from app.models import Item
 
@@ -48,8 +48,8 @@ class ItemRepository:
         else:
             statement = select(Item)
 
-        statement = statement.limit(PAGINATE_PER_PAGE).offset(
-            (page - 1) * PAGINATE_PER_PAGE
+        statement = statement.limit(configs.PAGINATE_PER_PAGE).offset(
+            (page - 1) * configs.PAGINATE_PER_PAGE
         )
         if name_like:
             statement = statement.where(Item.name.like(f"%{name_like}%"))

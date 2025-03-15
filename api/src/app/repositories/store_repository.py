@@ -5,7 +5,7 @@ from typing import Sequence
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.envs import PAGINATE_PER_PAGE
+from app.configs import configs
 from app.exceptions import AlreadyExists
 from app.models import Store
 
@@ -36,8 +36,8 @@ class StoreRepository:
 
         statement = (
             select(Store)
-            .limit(PAGINATE_PER_PAGE)
-            .offset((page - 1) * PAGINATE_PER_PAGE)
+            .limit(configs.PAGINATE_PER_PAGE)
+            .offset((page - 1) * configs.PAGINATE_PER_PAGE)
         )
         stores = await self.db_session.scalars(statement)
         return stores.all()

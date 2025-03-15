@@ -6,7 +6,7 @@ from typing import Sequence
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.envs import PAGINATE_PER_PAGE
+from app.configs import configs
 from app.models import Receipt
 
 
@@ -40,8 +40,8 @@ class ReceiptRepository:
 
         statement = (
             select(Receipt)
-            .limit(PAGINATE_PER_PAGE)
-            .offset((page - 1) * PAGINATE_PER_PAGE)
+            .limit(configs.PAGINATE_PER_PAGE)
+            .offset((page - 1) * configs.PAGINATE_PER_PAGE)
         )
         if type(store_ids) == list and len(store_ids) > 1:
             store_ids = [int(x) for x in store_ids]
