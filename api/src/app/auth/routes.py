@@ -37,6 +37,5 @@ async def login(user_details: schemas.UserInput, db_session: DBSessionDependency
             )
         }
     return error_response(
-        status_code=status.HTTP_404_NOT_FOUND,
-        content={"invalid": True},
+        status_code=status.HTTP_404_NOT_FOUND, content=[{"error": "invalid"}]
     )
