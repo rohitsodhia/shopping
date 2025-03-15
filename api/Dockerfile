@@ -6,7 +6,7 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 RUN apk update && \
-    apk add gcc build-base libffi-dev mariadb-dev curl ca-certificates
+    apk add gcc build-base libffi-dev mariadb-dev curl ca-certificates libpq-dev
 
 ADD https://astral.sh/uv/install.sh /uv-installer.sh
 RUN sh /uv-installer.sh && rm /uv-installer.sh
