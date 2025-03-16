@@ -6,6 +6,7 @@ from fastapi.testclient import TestClient
 from pytest_postgresql import factories
 from pytest_postgresql.janitor import DatabaseJanitor
 
+from app.configs import configs
 from app.database import get_db_session, session_manager
 from app.main import create_app
 from app.models.base import Base
@@ -23,9 +24,6 @@ def client(app):
         yield c
 
 
-test_db = factories.postgresql_proc(port=None, dbname="test_db")
-
-
 @pytest.fixture(scope="session")
 def event_loop(request):
     loop = asyncio.get_event_loop_policy().new_event_loop()
@@ -34,31 +32,30 @@ def event_loop(request):
 
 
 @pytest.fixture(scope="session", autouse=True)
-async def connection_test(test_db, event_loop):
-    host = test_db.host
-    port = test_db.port
-    user = test_db.user
-    db = test_db.dbname
-    password = test_db.password
+async def connection_test(event_loop):
+    print("IN CONFIG")
+    psql_container = factories.postgresql_noproc(
+        host=configs.DATABASE_HOST,
+        user=configs.DATABASE_USER,
+        password=configs.DATABASE_PASSWORD,
+    )
+    psql = factories.postgresql(
+        "psql_container",
+        dbname=f"{configs.DATABASE_DATABASE}_test",
+    )
 
-    with DatabaseJanitor(
-        user=user,
-        host=host,
-        port=port,
-        dbname=db,
-        version=test_db.version,
-        password=password,
-    ):
-        session_manager.init(host=host, user=user, password=password, database=db)
-        yield
-        await session_manager.close()
+    session_manager.init(
+        host=psql.host, user=psql.user, password=psql.password, database=psql.db
+    )
+    yield
+    await session_manager.close()
 
 
 @pytest.fixture(scope="function", autouse=True)
 async def create_tables(connection_test):
     async with session_manager.connect() as connection:
-        await connection.run_sync(Base.metadata.create_all)
         await connection.run_sync(Base.metadata.drop_all)
+        await connection.run_sync(Base.metadata.create_all)
 
 
 @pytest.fixture(scope="function", autouse=True)
