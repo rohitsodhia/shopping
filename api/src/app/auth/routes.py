@@ -2,7 +2,7 @@ import datetime
 
 import bcrypt
 import jwt
-from fastapi import APIRouter, status
+from fastapi import APIRouter
 
 from app.auth import schemas
 from app.configs import configs
@@ -16,7 +16,7 @@ auth = APIRouter(prefix="/auth")
 @auth.post(
     "/login",
     response_model=schemas.AuthResponse,
-    responses={404: {"model": schemas.AuthFailed}},
+    responses={422: {"model": schemas.AuthFailed}},
 )
 @public
 async def login(user_details: schemas.UserInput, db_session: DBSessionDependency):
@@ -36,6 +36,4 @@ async def login(user_details: schemas.UserInput, db_session: DBSessionDependency
                 algorithm=configs.JWT_ALGORITHM,
             )
         }
-    return error_response(
-        status_code=status.HTTP_404_NOT_FOUND, content=[{"error": "invalid"}]
-    )
+    return error_response(status_code=422, content=[{"error": "invalid"}])
