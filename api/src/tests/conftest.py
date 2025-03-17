@@ -1,10 +1,6 @@
-import asyncio
-from contextlib import ExitStack
-
+import bcrypt
 import pytest
-from fastapi.testclient import TestClient
-from pytest_postgresql import factories
-from pytest_postgresql.janitor import DatabaseJanitor
+from httpx import ASGITransport, AsyncClient
 
 from app.configs import configs
 from app.database import get_db_session, session_manager
@@ -12,40 +8,36 @@ from app.main import create_app
 from app.models.base import Base
 
 
+@pytest.fixture
+def anyio_backend():
+    return "asyncio"
+
+
 @pytest.fixture(autouse=True)
 def app():
-    with ExitStack():
-        yield create_app(init_db=False)
+    yield create_app(init_db=False)
 
 
 @pytest.fixture
-def client(app):
-    with TestClient(app) as c:
-        yield c
+async def client(app):
+    async with AsyncClient(
+        transport=ASGITransport(app=app), base_url="http://test"
+    ) as ac:
+        yield ac
 
 
-@pytest.fixture(scope="session")
-def event_loop(request):
-    loop = asyncio.get_event_loop_policy().new_event_loop()
-    yield loop
-    loop.close()
+@pytest.fixture(autouse=True)
+def set_env_password():
+    configs.PASSWORD_HASH = bcrypt.hashpw("test123".encode(), bcrypt.gensalt()).decode()
 
 
-@pytest.fixture(scope="session", autouse=True)
-async def connection_test(event_loop):
-    print("IN CONFIG")
-    psql_container = factories.postgresql_noproc(
+@pytest.fixture(scope="function", autouse=True)
+async def connection_test():
+    session_manager.init(
         host=configs.DATABASE_HOST,
         user=configs.DATABASE_USER,
         password=configs.DATABASE_PASSWORD,
-    )
-    psql = factories.postgresql(
-        "psql_container",
-        dbname=f"{configs.DATABASE_DATABASE}_test",
-    )
-
-    session_manager.init(
-        host=psql.host, user=psql.user, password=psql.password, database=psql.db
+        database=f"{configs.DATABASE_DATABASE}_test",
     )
     yield
     await session_manager.close()
