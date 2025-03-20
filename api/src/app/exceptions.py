@@ -5,6 +5,12 @@ class ValidationError(Exception):
         super().__init__(message)
 
 
+class NotFound[T](Exception):
+    def __init__(self, cls: T) -> None:
+        super().__init__("{type(cls).__name__} not found")
+        self.cls = cls
+
+
 class AlreadyExists[T](Exception):
     def __init__(self, cls: T) -> None:
         super().__init__("{type(cls).__name__} already exists")

@@ -6,7 +6,7 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.configs import configs
-from app.exceptions import AlreadyExists
+from app.exceptions import AlreadyExists, NotFound
 from app.models import Item
 
 
@@ -14,13 +14,14 @@ class ItemRepository:
     def __init__(self, db_session: AsyncSession):
         self.db_session = db_session
 
-    async def create(self, item: Item) -> Item:
+    async def create(self, name: str) -> Item:
         db_check = await self.db_session.scalar(
-            select(Item).where(Item.name == item.name).limit(1)
+            select(Item).where(Item.name == name).limit(1)
         )
         if db_check:
             raise AlreadyExists(db_check)
 
+        item = Item(name=name)
         self.db_session.add(item)
         await self.db_session.commit()
         return item
@@ -63,8 +64,16 @@ class ItemRepository:
         item = await self.db_session.scalar(select(Item).filter(Item.id == id).limit(1))
         return item
 
-    async def update(self, item: Item):
-        item.name = item.name.strip()
+    async def update(self, id: int, name: str | None = None, notes: str | None = None):
+        item = await self.get_by_id(id)
+        if not item:
+            raise NotFound(Item)
+
+        if name is not None:
+            item.name = name.strip()
+        if notes is not None:
+            item.notes = notes
+
         db_check = await self.db_session.scalar(
             select(Item).where(func.lower(Item.name) == item.name.lower()).limit(1)
         )
@@ -72,3 +81,4 @@ class ItemRepository:
             raise AlreadyExists(db_check)
 
         await self.db_session.commit()
+        return item

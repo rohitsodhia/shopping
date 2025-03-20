@@ -7,6 +7,7 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.configs import configs
+from app.exceptions import NotFound
 from app.models import Receipt
 
 
@@ -62,5 +63,17 @@ class ReceiptRepository:
         )
         return receipt
 
-    async def update(self, receipt: Receipt):
+    async def update(
+        self, id: int, date: datetime.date | None = None, notes: str | None = ""
+    ):
+        receipt = await self.get_by_id(id)
+        if not receipt:
+            raise NotFound(Receipt)
+
+        if date:
+            receipt.date = date
+        if notes:
+            receipt.notes = notes
+
         await self.db_session.commit()
+        return receipt

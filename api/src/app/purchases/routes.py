@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
 from app.database import DBSessionDependency
-from app.exceptions import IntegrityError
+from app.exceptions import IntegrityError, NotFound
 from app.helpers.functions import dict_from_schema
 from app.helpers.response_errors import (
     error_response,
@@ -77,15 +77,12 @@ async def update_purchase(
     purchase_repository = PurchaseRepository(db_session)
 
     try:
-        purchase = await purchase_repository.get_by_id(purchase_id)
-        if not purchase:
-            return not_found_response()
-        if purchase_input.price:
-            purchase.price = purchase_input.price
-        purchase.notes = purchase_input.notes
-        await purchase_repository.update(purchase)
+        purchase = await purchase_repository.update(
+            purchase_id, price=purchase_input.price, notes=purchase_input.notes
+        )
+    except NotFound as e:
+        return not_found_response()
     except Exception as e:
-        print(e)
         return error_response(
             status_code=400,
         )

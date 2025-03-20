@@ -23,7 +23,7 @@ items = APIRouter(prefix="/items")
 async def add_item(item_input: schemas.NewItemInput, db_session: DBSessionDependency):
     item_repository = ItemRepository(db_session)
     try:
-        item = await item_repository.create(Item(name=item_input.name))
+        item = await item_repository.create(name=item_input.name)
     except AlreadyExists as e:
         return error_response(
             status_code=400,
@@ -95,15 +95,9 @@ async def update_item(
         return fields_missing_response(["name", "notes"])
 
     try:
-        item = await item_repository.get_by_id(item_id)
-        if not item:
-            return not_found_response()
-
-        if item_input.name:
-            item.name = item_input.name
-        if item_input.notes:
-            item.notes = item_input.notes
-        await item_repository.update(item)
+        item = await item_repository.update(
+            item_id, name=item_input.name, notes=item_input.notes
+        )
     except AlreadyExists as e:
         return error_response(
             status_code=400,

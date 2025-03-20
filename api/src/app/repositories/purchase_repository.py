@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
 from app.configs import configs
-from app.exceptions import IntegrityError
+from app.exceptions import IntegrityError, NotFound
 from app.helpers.functions import parse_integrity_error
 from app.models import Purchase
 
@@ -63,5 +63,17 @@ class PurchaseRepository:
         item = await self.db_session.scalar(statement)
         return item
 
-    async def update(self, purchase: Purchase):
+    async def update(
+        self, id: int, price: float | None = None, notes: str | None = None
+    ):
+        purchase = await self.get_by_id(id)
+        if not purchase:
+            raise NotFound(Purchase)
+
+        if price is not None:
+            purchase.price = price
+        if notes is not None:
+            purchase.notes = notes
+
         await self.db_session.commit()
+        return purchase

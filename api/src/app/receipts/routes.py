@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi import APIRouter, Query
 
 from app.database import DBSessionDependency
-from app.exceptions import AlreadyExists
+from app.exceptions import AlreadyExists, NotFound
 from app.helpers.functions import dict_from_schema
 from app.helpers.response_errors import (
     already_exists_error,
@@ -55,17 +55,6 @@ async def list_receipts(
             status_code=400,
         )
 
-    print(type(list(receipts)))
-    print(
-        {
-            "data": {
-                "receipts": list(receipts),
-                "page": page,
-                "total": await receipt_repository.count(store_ids=store_ids),
-            },
-        }
-    )
-
     if receipts:
         return {
             "data": {
@@ -113,15 +102,11 @@ async def update_receipt(
         return fields_missing_response(["date", "notes"])
 
     try:
-        receipt = await receipt_repository.get_by_id(receipt_id)
-        if not receipt:
-            return not_found_response()
-
-        if receipt_input.date:
-            receipt.date = receipt_input.date
-        if receipt_input.notes:
-            receipt.notes = receipt_input.notes
-        await receipt_repository.update(receipt)
+        receipt = await receipt_repository.update(
+            id=receipt_id, date=receipt_input.date, notes=receipt_input.notes
+        )
+    except NotFound as e:
+        return not_found_response()
     except AlreadyExists as e:
         return error_response(
             status_code=400,

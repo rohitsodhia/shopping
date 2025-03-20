@@ -6,7 +6,7 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.configs import configs
-from app.exceptions import AlreadyExists
+from app.exceptions import AlreadyExists, NotFound
 from app.models import Store
 
 
@@ -14,14 +14,16 @@ class StoreRepository:
     def __init__(self, db_session: AsyncSession):
         self.db_session = db_session
 
-    async def create(self, store: Store):
-        store.name = store.name.strip()
+    async def create(self, name: str):
+        name = name.strip()
+
         db_check = await self.db_session.scalar(
-            select(Store).where(func.lower(Store.name) == store.name.lower()).limit(1)
+            select(Store).where(func.lower(Store.name) == name.lower()).limit(1)
         )
         if db_check:
             raise AlreadyExists(db_check)
 
+        store = Store(name=name)
         self.db_session.add(store)
         await self.db_session.commit()
         return store
@@ -48,12 +50,19 @@ class StoreRepository:
         )
         return item
 
-    async def update(self, store: Store):
-        store.name = store.name.strip()
+    async def update(self, id: int, name: str | None = None) -> Store:
+        store = await self.get_by_id(id)
+        if not store:
+            raise NotFound(Store)
+
+        if name is not None:
+            store.name = name.strip()
+
         db_check = await self.db_session.scalar(
             select(Store).where(func.lower(Store.name) == store.name.lower()).limit(1)
         )
-        if db_check and db_check.id != store.id:
+        if db_check and db_check.id != id:
             raise AlreadyExists(db_check)
 
         await self.db_session.commit()
+        return store

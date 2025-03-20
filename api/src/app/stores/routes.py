@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
 from app.database import DBSessionDependency
-from app.exceptions import AlreadyExists
+from app.exceptions import AlreadyExists, NotFound
 from app.helpers.functions import dict_from_schema
 from app.helpers.response_errors import (
     already_exists_error,
@@ -23,7 +23,7 @@ stores = APIRouter(prefix="/stores")
 async def add_store(store_input: schemas.StoreInput, db_session: DBSessionDependency):
     store_repository = StoreRepository(db_session)
     try:
-        store = await store_repository.create(Store(name=store_input.name))
+        store = await store_repository.create(name=store_input.name)
     except AlreadyExists as e:
         return error_response(
             status_code=400,
@@ -73,11 +73,9 @@ async def update_store(
         return fields_missing_response(["name"])
 
     try:
-        store = await store_repository.get_by_id(store_id)
-        if not store:
-            return not_found_response()
-        store.name = store_input.name
-        await store_repository.update(store)
+        store = await store_repository.update(id=store_id, name=store_input.name)
+    except NotFound as e:
+        return not_found_response()
     except AlreadyExists as e:
         return error_response(
             status_code=400,
