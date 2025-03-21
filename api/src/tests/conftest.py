@@ -32,7 +32,7 @@ def set_env_password():
 
 
 @pytest.fixture(scope="function", autouse=True)
-async def connection_test():
+async def db_connection():
     session_manager.init(
         host=configs.DATABASE_HOST,
         user=configs.DATABASE_USER,
@@ -44,14 +44,14 @@ async def connection_test():
 
 
 @pytest.fixture(scope="function", autouse=True)
-async def create_tables(connection_test):
+async def create_tables(db_connection):
     async with session_manager.connect() as connection:
         await connection.run_sync(Base.metadata.drop_all)
         await connection.run_sync(Base.metadata.create_all)
 
 
 @pytest.fixture(scope="function", autouse=True)
-async def session_override(app, connection_test):
+async def session_override(app, db_connection):
     async def get_db_override():
         async with session_manager.session() as session:
             yield session
