@@ -27,7 +27,7 @@ async def client(app):
 
 
 @pytest.fixture(autouse=True)
-def set_env_password():
+def set_config_password_hash():
     configs.PASSWORD_HASH = bcrypt.hashpw("test123".encode(), bcrypt.gensalt()).decode()
 
 

@@ -34,7 +34,7 @@ class StoreRepository:
     async def get_all(self, page: int = 1) -> Sequence[Store]:
         page = int(page)
         if page < 1:
-            page = 1
+            raise ValueError("page must be an integer greater than or equal to 1")
 
         statement = (
             select(Store)
@@ -50,13 +50,14 @@ class StoreRepository:
         )
         return item
 
-    async def update(self, id: int, name: str | None = None) -> Store:
+    async def update(self, id: int, name: str) -> Store:
         store = await self.get_by_id(id)
         if not store:
             raise NotFound(Store)
 
-        if name is not None:
-            store.name = name.strip()
+        if name.strip() == store.name:
+            return store
+        store.name = name.strip()
 
         db_check = await self.db_session.scalar(
             select(Store).where(func.lower(Store.name) == store.name.lower()).limit(1)
