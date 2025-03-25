@@ -1,12 +1,13 @@
 from fastapi import APIRouter
 
 from app.database import DBSessionDependency
-from app.exceptions import AlreadyExists
+from app.exceptions import AlreadyExists, IntegrityError
 from app.helpers.functions import dict_from_schema
 from app.helpers.response_errors import (
     already_exists_error,
     error_response,
     fields_missing_response,
+    integrity_error_response,
     not_found_response,
 )
 from app.items import schemas
@@ -24,6 +25,10 @@ async def add_item(item_input: schemas.NewItemInput, db_session: DBSessionDepend
     item_repository = ItemRepository(db_session)
     try:
         item = await item_repository.create(name=item_input.name)
+    except IntegrityError as e:
+        return error_response(
+            status_code=422, content=[integrity_error_response(str(e))]
+        )
     except AlreadyExists as e:
         return error_response(
             status_code=400,

@@ -3,10 +3,12 @@ from __future__ import annotations
 from typing import Sequence
 
 from sqlalchemy import func, select
+from sqlalchemy.exc import IntegrityError as SQLAIntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.configs import configs
-from app.exceptions import AlreadyExists, NotFound
+from app.exceptions import AlreadyExists, IntegrityError, NotFound
+from app.helpers.functions import parse_integrity_error
 from app.models import Item
 
 
@@ -15,15 +17,14 @@ class ItemRepository:
         self.db_session = db_session
 
     async def create(self, name: str) -> Item:
-        db_check = await self.db_session.scalar(
-            select(Item).where(Item.name == name).limit(1)
-        )
-        if db_check:
-            raise AlreadyExists(db_check)
-
         item = Item(name=name)
         self.db_session.add(item)
-        await self.db_session.commit()
+        try:
+            await self.db_session.commit()
+        except SQLAIntegrityError as e:
+            if str(e.orig):
+                if insert_vals := parse_integrity_error(str(e.orig)):
+                    raise IntegrityError(*insert_vals)
         return item
 
     async def count(self, name_like: str | None = None) -> int:
