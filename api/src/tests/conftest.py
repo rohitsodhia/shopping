@@ -1,6 +1,7 @@
 import bcrypt
 import pytest
 from httpx import ASGITransport, AsyncClient
+from sqlalchemy import text
 
 from app.configs import configs
 from app.database import get_db_session, session_manager
@@ -47,6 +48,7 @@ async def db_connection():
 async def create_tables(db_connection):
     async with session_manager.connect() as connection:
         await connection.run_sync(Base.metadata.drop_all)
+        await connection.execute(text("CREATE EXTENSION IF NOT EXISTS citext"))
         await connection.run_sync(Base.metadata.create_all)
 
 
