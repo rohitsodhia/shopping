@@ -1,11 +1,13 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class StoreInput(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)
     name: str
 
 
 class Store(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)
     id: int
     name: str
 

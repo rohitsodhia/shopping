@@ -7,8 +7,7 @@ from sqlalchemy.exc import IntegrityError as SQLAIntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.configs import configs
-from app.exceptions import AlreadyExists, IntegrityError, NotFound
-from app.helpers.functions import parse_integrity_error
+from app.exceptions import AlreadyExists, NotFound
 from app.models import Store
 
 
@@ -17,8 +16,6 @@ class StoreRepository:
         self.db_session = db_session
 
     async def create(self, name: str):
-        name = name.strip()
-
         store = Store(name=name)
         self.db_session.add(store)
         try:
@@ -55,9 +52,7 @@ class StoreRepository:
         if not store:
             raise NotFound(Store)
 
-        if name.strip() == store.name:
-            return store
-        store.name = name.strip()
+        store.name = name
 
         try:
             await self.db_session.commit()
