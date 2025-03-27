@@ -1,12 +1,13 @@
 from fastapi import APIRouter
 
 from app.database import DBSessionDependency
-from app.exceptions import AlreadyExists, NotFound
+from app.exceptions import AlreadyExists, IntegrityError, NotFound
 from app.helpers.functions import dict_from_schema
 from app.helpers.response_errors import (
     already_exists_error,
     error_response,
     fields_missing_response,
+    integrity_error_response,
     not_found_response,
 )
 from app.models.store import Store
@@ -24,6 +25,10 @@ async def add_store(store_input: schemas.StoreInput, db_session: DBSessionDepend
     store_repository = StoreRepository(db_session)
     try:
         store = await store_repository.create(name=store_input.name)
+    except IntegrityError as e:
+        return error_response(
+            status_code=422, content=[integrity_error_response(str(e))]
+        )
     except AlreadyExists as e:
         return error_response(
             status_code=400,

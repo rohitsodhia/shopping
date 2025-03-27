@@ -5,7 +5,6 @@ from typing import Sequence
 from sqlalchemy import insert, select
 from sqlalchemy.exc import IntegrityError as SQLAIntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import joinedload
 
 from app.configs import configs
 from app.exceptions import IntegrityError, NotFound

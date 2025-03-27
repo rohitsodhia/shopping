@@ -18,5 +18,5 @@ class AlreadyExists[T](Exception):
 
 
 class IntegrityError(Exception):
-    def __init__(self, column: str, insert_id: int) -> None:
-        super().__init__(f"{column} {insert_id} not found")
+    def __init__(self, column: str, insert_id: int | str) -> None:
+        super().__init__(f'`{column}` "{insert_id}" already exists')

@@ -3,10 +3,12 @@ from __future__ import annotations
 from typing import Sequence
 
 from sqlalchemy import func, select
+from sqlalchemy.exc import IntegrityError as SQLAIntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.configs import configs
-from app.exceptions import AlreadyExists, NotFound
+from app.exceptions import AlreadyExists, IntegrityError, NotFound
+from app.helpers.functions import parse_integrity_error
 from app.models import Store
 
 
@@ -17,15 +19,13 @@ class StoreRepository:
     async def create(self, name: str):
         name = name.strip()
 
-        db_check = await self.db_session.scalar(
-            select(Store).where(func.lower(Store.name) == name.lower()).limit(1)
-        )
-        if db_check:
-            raise AlreadyExists(db_check)
-
         store = Store(name=name)
         self.db_session.add(store)
-        await self.db_session.commit()
+        try:
+            await self.db_session.commit()
+        except SQLAIntegrityError as e:
+            await self.db_session.rollback()
+            raise AlreadyExists(e)
         return store
 
     async def count(self) -> int:
@@ -59,11 +59,9 @@ class StoreRepository:
             return store
         store.name = name.strip()
 
-        db_check = await self.db_session.scalar(
-            select(Store).where(func.lower(Store.name) == store.name.lower()).limit(1)
-        )
-        if db_check and db_check.id != id:
-            raise AlreadyExists(db_check)
-
-        await self.db_session.commit()
+        try:
+            await self.db_session.commit()
+        except SQLAIntegrityError as e:
+            await self.db_session.rollback()
+            raise AlreadyExists(e)
         return store
