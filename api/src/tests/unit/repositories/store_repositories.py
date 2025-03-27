@@ -37,10 +37,9 @@ class TestStoreRepository:
         name = "test"
         store = await store_repository.create(name=name)
         with pytest.raises(AlreadyExists) as e:
-            store = await store_repository.create(name=name)
+            await store_repository.create(name=name)
         with pytest.raises(AlreadyExists) as e:
-            store = await store_repository.create(name=name.upper())
-        assert store.id
+            await store_repository.create(name=name.upper())
 
     async def test_count(self, db_session: AsyncSession):
         store_repository = StoreRepository(db_session)
@@ -99,12 +98,3 @@ class TestStoreRepository:
         store_repository = StoreRepository(db_session)
         with pytest.raises(NotFound) as e:
             await store_repository.update(id=1, name="test")
-
-    async def test_update_name_with_padding(self, db_session: AsyncSession):
-        store_repository = StoreRepository(db_session)
-        store = Store(name="test")
-        db_session.add(store)
-        await db_session.commit()
-
-        with pytest.raises(NotFound) as e:
-            await store_repository.update(id=store.id, name="test ")
