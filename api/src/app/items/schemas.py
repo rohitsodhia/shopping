@@ -1,11 +1,15 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class NewItemInput(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)
+
     name: str
 
 
 class Item(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)
+
     id: int
     name: str
     notes: str | None = None
@@ -34,5 +38,7 @@ class GetItemResponse(BaseModel):
 
 
 class ItemInput(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)
+
     name: str | None = None
     notes: str | None = None

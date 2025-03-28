@@ -52,13 +52,6 @@ class TestStoreRepository:
         stores_in_db = await store_repository.get_all(2)
         assert len(stores_in_db) == 1
 
-    async def test_get_all_invalid_page(self, db_session: AsyncSession):
-        store_repository = StoreRepository(db_session)
-        with pytest.raises(ValueError) as e:
-            await store_repository.get_all(0)
-        with pytest.raises(ValueError) as e:
-            await store_repository.get_all(-1)
-
     async def test_get_by_id(self, db_session: AsyncSession):
         store_repository = StoreRepository(db_session)
         stores_inserted = await db_session.scalars(

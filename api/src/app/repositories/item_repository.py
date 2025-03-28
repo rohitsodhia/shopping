@@ -41,10 +41,6 @@ class ItemRepository:
         name_like: str | None = None,
         ids: list[int] | None = None,
     ) -> Sequence[Item]:
-        page = int(page)
-        if page < 1:
-            page = 1
-
         if fields:
             statement = select(*[getattr(Item, f) for f in fields])
         else:
@@ -71,7 +67,7 @@ class ItemRepository:
             raise NotFound(Item)
 
         if name is not None:
-            item.name = name.strip()
+            item.name = name
         if notes is not None:
             item.notes = notes
 

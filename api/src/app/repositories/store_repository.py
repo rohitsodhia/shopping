@@ -29,10 +29,6 @@ class StoreRepository:
         return await self.db_session.scalar(select(func.count(Store.id)))  # type: ignore
 
     async def get_all(self, page: int = 1) -> Sequence[Store]:
-        page = int(page)
-        if page < 1:
-            raise ValueError("page must be an integer greater than or equal to 1")
-
         statement = (
             select(Store)
             .limit(configs.PAGINATE_PER_PAGE)
