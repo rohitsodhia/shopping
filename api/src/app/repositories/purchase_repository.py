@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Sequence
+from typing import NotRequired, Sequence, TypedDict
 
 from sqlalchemy import insert, select
 from sqlalchemy.exc import IntegrityError as SQLAIntegrityError
@@ -10,6 +10,16 @@ from app.configs import configs
 from app.exceptions import IntegrityError, NotFound
 from app.helpers.functions import parse_integrity_error
 from app.models import Purchase
+
+PurchaseDict = TypedDict(
+    "PurchaseDict",
+    {
+        "item_id": int,
+        "receipt_id": int,
+        "price": float,
+        "notes": NotRequired[str],
+    },
+)
 
 
 class PurchaseRepository:
@@ -33,22 +43,24 @@ class PurchaseRepository:
 
         return purchase
 
-    async def bulk_create(self, purchases: list) -> Sequence[Purchase]:
+    async def bulk_create(
+        self,
+        purchases: list[PurchaseDict],
+    ) -> Sequence[Purchase]:
+        purchase_objs: list[Purchase] = []
+        for purchase in purchases:
+            purchase_objs.append(Purchase(**purchase))
         try:
-            purchase_objs = await self.db_session.scalars(
-                insert(Purchase).returning(Purchase), purchases
+            purchase_results = await self.db_session.scalars(
+                insert(Purchase).returning(Purchase),
+                [o.__dict__ for o in purchase_objs],
             )
         except Exception as e:
             raise e
 
-        await self.db_session.commit()
-        return purchase_objs.all()
+        return purchase_results.all()
 
     async def get_all(self, page: int = 1) -> Sequence[Purchase]:
-        page = int(page)
-        if page < 1:
-            page = 1
-
         statement = (
             select(Purchase)
             .limit(configs.PAGINATE_PER_PAGE)
