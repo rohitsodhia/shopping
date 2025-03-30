@@ -1,17 +1,15 @@
 from fastapi import APIRouter
 
+from app import schemas as global_schemas
 from app.database import DBSessionDependency
-from app.exceptions import AlreadyExists, IntegrityError
+from app.exceptions import AlreadyExists
 from app.helpers.functions import dict_from_schema
 from app.helpers.response_errors import (
-    already_exists_error,
     error_response,
     fields_missing_response,
-    integrity_error_response,
     not_found_response,
 )
 from app.items import schemas
-from app.models.item import Item
 from app.repositories import ItemRepository
 
 items = APIRouter(prefix="/items")
@@ -20,20 +18,11 @@ items = APIRouter(prefix="/items")
 @items.post(
     "",
     response_model=schemas.ItemResponse,
+    responses={422: {"model": global_schemas.AlreadyExistsResponse}},
 )
 async def add_item(item_input: schemas.NewItemInput, db_session: DBSessionDependency):
     item_repository = ItemRepository(db_session)
-    try:
-        item = await item_repository.create(name=item_input.name)
-    except IntegrityError as e:
-        return error_response(
-            status_code=422, content=[integrity_error_response(str(e))]
-        )
-    except AlreadyExists as e:
-        return error_response(
-            status_code=400,
-            content=[already_exists_error(dict_from_schema(e.cls, schemas.Item))],
-        )
+    item = await item_repository.create(name=item_input.name)
 
     return {"data": {"item": dict_from_schema(item, schemas.Item)}}
 

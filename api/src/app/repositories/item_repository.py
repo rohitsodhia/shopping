@@ -23,7 +23,7 @@ class ItemRepository:
             await self.db_session.commit()
         except SQLAIntegrityError as e:
             await self.db_session.rollback()
-            raise AlreadyExists(e)
+            raise AlreadyExists(Item)
         return item
 
     async def count(self, name_like: str | None = None) -> int:

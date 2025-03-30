@@ -1,11 +1,10 @@
 from contextlib import asynccontextmanager
 from random import seed
-from typing import Callable
 
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app import middleware
+from app import exceptions, middleware, route_exceptions
 from app.auth.routes import auth
 from app.configs import configs
 from app.database import get_db_session, session_manager
@@ -40,6 +39,10 @@ def create_app(init_db=True) -> FastAPI:
         ],
         lifespan=lifespan,
     )
+
+    app.exception_handlers = {
+        exceptions.AlreadyExists: route_exceptions.already_exists_exception_handler,
+    }
 
     app.add_middleware(
         CORSMiddleware,

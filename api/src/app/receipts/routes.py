@@ -6,7 +6,6 @@ from app.database import DBSessionDependency
 from app.exceptions import AlreadyExists, NotFound
 from app.helpers.functions import dict_from_schema
 from app.helpers.response_errors import (
-    already_exists_error,
     error_response,
     fields_missing_response,
     not_found_response,
