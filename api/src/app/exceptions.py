@@ -7,7 +7,7 @@ class ValidationError(Exception):
 
 class NotFound[T](Exception):
     def __init__(self, cls: T) -> None:
-        super().__init__("{type(cls).__name__} not found")
+        super().__init__(f"{getattr(cls, "__name__")}not found")
         self.cls = cls
 
 
@@ -15,8 +15,3 @@ class AlreadyExists[T](Exception):
     def __init__(self, cls: T) -> None:
         super().__init__(f"{getattr(cls, "__name__")} already exists")
         self.cls = cls
-
-
-class IntegrityError(Exception):
-    def __init__(self, column: str, insert_id: int | str) -> None:
-        super().__init__(f'`{column}` "{insert_id}" already exists')

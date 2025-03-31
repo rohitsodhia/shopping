@@ -7,8 +7,7 @@ from sqlalchemy.exc import IntegrityError as SQLAIntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.configs import configs
-from app.exceptions import AlreadyExists, IntegrityError, NotFound
-from app.helpers.functions import parse_integrity_error
+from app.exceptions import AlreadyExists, NotFound
 from app.models import Item
 
 

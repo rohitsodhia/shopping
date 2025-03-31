@@ -42,6 +42,7 @@ def create_app(init_db=True) -> FastAPI:
 
     app.exception_handlers = {
         exceptions.AlreadyExists: route_exceptions.already_exists_exception_handler,
+        exceptions.NotFound: route_exceptions.not_found_exception_handler,
     }
 
     app.add_middleware(

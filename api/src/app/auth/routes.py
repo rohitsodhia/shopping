@@ -5,7 +5,7 @@ from app.auth import functions, schemas
 from app.configs import configs
 from app.database import DBSessionDependency
 from app.helpers.decorators import public
-from app.helpers.response_errors import error_response
+from app.helpers.responses import error_response
 
 auth = APIRouter(prefix="/auth")
 

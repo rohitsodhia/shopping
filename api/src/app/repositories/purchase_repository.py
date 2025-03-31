@@ -7,8 +7,7 @@ from sqlalchemy.exc import IntegrityError as SQLAIntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.configs import configs
-from app.exceptions import IntegrityError, NotFound
-from app.helpers.functions import parse_integrity_error
+from app.exceptions import AlreadyExists, NotFound
 from app.models import Purchase
 
 PurchaseDict = TypedDict(
@@ -37,9 +36,8 @@ class PurchaseRepository:
         try:
             await self.db_session.commit()
         except SQLAIntegrityError as e:
-            if str(e.orig):
-                if insert_vals := parse_integrity_error(str(e.orig)):
-                    raise IntegrityError(*insert_vals)
+            await self.db_session.rollback()
+            raise AlreadyExists(Purchase)
 
         return purchase
 

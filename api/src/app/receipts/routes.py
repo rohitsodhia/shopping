@@ -3,13 +3,9 @@ from typing import Annotated
 from fastapi import APIRouter, Query
 
 from app.database import DBSessionDependency
-from app.exceptions import AlreadyExists, NotFound
+from app.exceptions import NotFound
 from app.helpers.functions import dict_from_schema
-from app.helpers.response_errors import (
-    error_response,
-    fields_missing_response,
-    not_found_response,
-)
+from app.models import Receipt
 from app.receipts import schemas
 from app.repositories import ReceiptRepository
 
@@ -47,12 +43,7 @@ async def list_receipts(
     if not page or page < 1:
         page = 1
 
-    try:
-        receipts = await receipt_repository.get_all(store_ids=store_ids)
-    except:
-        return error_response(
-            status_code=400,
-        )
+    receipts = await receipt_repository.get_all(store_ids=store_ids)
 
     if receipts:
         return {
@@ -70,15 +61,10 @@ async def list_receipts(
 )
 async def get_receipt(db_session: DBSessionDependency, receipt_id: int):
     receipt_repository = ReceiptRepository(db_session)
-    try:
-        receipt = await receipt_repository.get_by_id(receipt_id)
-    except:
-        return error_response(
-            status_code=400,
-        )
+    receipt = await receipt_repository.get_by_id(receipt_id)
 
     if not receipt:
-        return not_found_response()
+        raise NotFound(Receipt)
     return {
         "data": {
             "item": dict_from_schema(receipt, schemas.Receipt),
@@ -97,24 +83,9 @@ async def update_receipt(
 ):
     receipt_repository = ReceiptRepository(db_session)
 
-    if not receipt_input.date and not receipt_input.notes:
-        return fields_missing_response(["date", "notes"])
-
-    try:
-        receipt = await receipt_repository.update(
-            id=receipt_id, date=receipt_input.date, notes=receipt_input.notes
-        )
-    except NotFound as e:
-        return not_found_response()
-    except AlreadyExists as e:
-        return error_response(
-            status_code=400,
-            content=[already_exists_error(dict_from_schema(e.cls, schemas.Receipt))],
-        )
-    except Exception as e:
-        return error_response(
-            status_code=400,
-        )
+    receipt = await receipt_repository.update(
+        id=receipt_id, date=receipt_input.date, notes=receipt_input.notes
+    )
 
     return {
         "data": {

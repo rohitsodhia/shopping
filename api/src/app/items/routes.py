@@ -2,14 +2,10 @@ from fastapi import APIRouter
 
 from app import schemas as global_schemas
 from app.database import DBSessionDependency
-from app.exceptions import AlreadyExists
+from app.exceptions import NotFound
 from app.helpers.functions import dict_from_schema
-from app.helpers.response_errors import (
-    error_response,
-    fields_missing_response,
-    not_found_response,
-)
 from app.items import schemas
+from app.models import Item
 from app.repositories import ItemRepository
 
 items = APIRouter(prefix="/items")
@@ -38,12 +34,7 @@ async def list_items(
     if not page or page < 1:
         page = 1
 
-    try:
-        items = await item_repository.get_all(name_like=search)
-    except:
-        return error_response(
-            status_code=400,
-        )
+    items = await item_repository.get_all(name_like=search)
 
     return {
         "data": {
@@ -60,15 +51,10 @@ async def list_items(
 )
 async def get_item(db_session: DBSessionDependency, item_id: int):
     item_repository = ItemRepository(db_session)
-    try:
-        item = await item_repository.get_by_id(item_id)
-    except:
-        return error_response(
-            status_code=400,
-        )
+    item = await item_repository.get_by_id(item_id)
 
     if not item:
-        return not_found_response()
+        raise NotFound(Item)
     return {
         "data": {
             "item": dict_from_schema(item, schemas.Item),
@@ -85,22 +71,9 @@ async def update_item(
 ):
     item_repository = ItemRepository(db_session)
 
-    if not item_input.name and not item_input.notes:
-        return fields_missing_response(["name", "notes"])
-
-    try:
-        item = await item_repository.update(
-            item_id, name=item_input.name, notes=item_input.notes
-        )
-    except AlreadyExists as e:
-        return error_response(
-            status_code=400,
-            content=[already_exists_error(dict_from_schema(e.cls, schemas.Item))],
-        )
-    except Exception as e:
-        return error_response(
-            status_code=400,
-        )
+    item = await item_repository.update(
+        item_id, name=item_input.name, notes=item_input.notes
+    )
 
     return {
         "data": {
