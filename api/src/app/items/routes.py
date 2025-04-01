@@ -34,7 +34,7 @@ async def list_items(
     if not page or page < 1:
         page = 1
 
-    items = await item_repository.get_all(name_like=search)
+    items = await item_repository.get_all(page=page, name_like=search)
 
     return {
         "data": {
