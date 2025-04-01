@@ -6,7 +6,7 @@ from sqlalchemy import insert, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.configs import configs
-from app.exceptions import AlreadyExists, NotFound
+from app.exceptions import NotFound
 from app.models import Receipt, Store
 from app.repositories import ReceiptRepository
 

@@ -2,11 +2,10 @@ import datetime
 import random
 
 import pytest
-from sqlalchemy import insert, select
+from sqlalchemy import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.configs import configs
-from app.exceptions import AlreadyExists, NotFound
 from app.models import Item, Purchase, Receipt, Store
 from app.repositories import PurchaseRepository
 
