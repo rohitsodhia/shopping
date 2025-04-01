@@ -30,7 +30,7 @@ async def list_stores(db_session: DBSessionDependency, page: int = 1):
     if page < 1:
         page = 1
 
-    stores = await store_repository.get_all()
+    stores = await store_repository.get_all(page=page)
 
     return {
         "data": {
