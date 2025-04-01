@@ -7,11 +7,19 @@ class ValidationError(Exception):
 
 class NotFound[T](Exception):
     def __init__(self, cls: T) -> None:
-        super().__init__(f"{getattr(cls, "__name__")}not found")
+        if isinstance(cls, type):
+            cls_name = cls.__name__
+        else:
+            cls_name = type(cls).__name__
+        super().__init__(f"{cls_name} not found")
         self.cls = cls
 
 
 class AlreadyExists[T](Exception):
     def __init__(self, cls: T) -> None:
-        super().__init__(f"{getattr(cls, "__name__")} already exists")
+        if isinstance(cls, type):
+            cls_name = cls.__name__
+        else:
+            cls_name = type(cls).__name__
+        super().__init__(f"{cls_name} already exists")
         self.cls = cls
