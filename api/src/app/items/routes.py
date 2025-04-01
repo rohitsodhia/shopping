@@ -28,10 +28,12 @@ async def add_item(item_input: schemas.NewItemInput, db_session: DBSessionDepend
     response_model=schemas.ListItemsResponse,
 )
 async def list_items(
-    db_session: DBSessionDependency, page: int | None = None, search: str | None = None
+    db_session: DBSessionDependency, page: int = 1, search: str | None = None
 ):
     item_repository = ItemRepository(db_session)
-    if not page or page < 1:
+
+    page = int(page)
+    if page < 1:
         page = 1
 
     items = await item_repository.get_all(page=page, name_like=search)

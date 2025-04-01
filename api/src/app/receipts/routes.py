@@ -36,11 +36,13 @@ async def add_receipt(
 )
 async def list_receipts(
     db_session: DBSessionDependency,
-    page: int | None = None,
+    page: int = 1,
     store_ids: Annotated[list[int] | None, Query()] = None,
 ):
     receipt_repository = ReceiptRepository(db_session)
-    if not page or page < 1:
+
+    page = int(page)
+    if page < 1:
         page = 1
 
     receipts = await receipt_repository.get_all(store_ids=store_ids)
