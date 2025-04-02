@@ -6,7 +6,8 @@ from typing import Sequence
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.envs import PAGINATE_PER_PAGE
+from app.configs import configs
+from app.exceptions import NotFound
 from app.models import Receipt
 
 
@@ -40,8 +41,8 @@ class ReceiptRepository:
 
         statement = (
             select(Receipt)
-            .limit(PAGINATE_PER_PAGE)
-            .offset((page - 1) * PAGINATE_PER_PAGE)
+            .limit(configs.PAGINATE_PER_PAGE)
+            .offset((page - 1) * configs.PAGINATE_PER_PAGE)
         )
         if type(store_ids) == list and len(store_ids) > 1:
             store_ids = [int(x) for x in store_ids]
@@ -62,5 +63,17 @@ class ReceiptRepository:
         )
         return receipt
 
-    async def update(self, receipt: Receipt):
+    async def update(
+        self, id: int, date: datetime.date | None = None, notes: str | None = ""
+    ):
+        receipt = await self.get_by_id(id)
+        if not receipt:
+            raise NotFound(Receipt)
+
+        if date:
+            receipt.date = date
+        if notes:
+            receipt.notes = notes
+
         await self.db_session.commit()
+        return receipt

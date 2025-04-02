@@ -5,12 +5,21 @@ class ValidationError(Exception):
         super().__init__(message)
 
 
-class AlreadyExists[T](Exception):
+class NotFound[T](Exception):
     def __init__(self, cls: T) -> None:
-        super().__init__("{type(cls).__name__} already exists")
+        if isinstance(cls, type):
+            cls_name = cls.__name__
+        else:
+            cls_name = type(cls).__name__
+        super().__init__(f"{cls_name} not found")
         self.cls = cls
 
 
-class IntegrityError(Exception):
-    def __init__(self, column: str, insert_id: int) -> None:
-        super().__init__(f"{column} {insert_id} not found")
+class AlreadyExists[T](Exception):
+    def __init__(self, cls: T) -> None:
+        if isinstance(cls, type):
+            cls_name = cls.__name__
+        else:
+            cls_name = type(cls).__name__
+        super().__init__(f"{cls_name} already exists")
+        self.cls = cls

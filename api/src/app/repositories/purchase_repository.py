@@ -1,15 +1,13 @@
 from __future__ import annotations
 
-from typing import Sequence
+from typing import NotRequired, Sequence, TypedDict
 
 from sqlalchemy import insert, select
 from sqlalchemy.exc import IntegrityError as SQLAIntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import joinedload
 
-from app.envs import PAGINATE_PER_PAGE
-from app.exceptions import IntegrityError
-from app.helpers.functions import parse_integrity_error
+from app.configs import configs
+from app.exceptions import AlreadyExists, NotFound
 from app.models import Purchase
 
 
@@ -28,32 +26,30 @@ class PurchaseRepository:
         try:
             await self.db_session.commit()
         except SQLAIntegrityError as e:
-            if str(e.orig):
-                if insert_vals := parse_integrity_error(str(e.orig)):
-                    raise IntegrityError(*insert_vals)
+            await self.db_session.rollback()
+            raise AlreadyExists(Purchase)
 
         return purchase
 
-    async def bulk_create(self, purchases: list) -> Sequence[Purchase]:
+    async def bulk_create(
+        self,
+        purchases: list[dict],
+    ) -> Sequence[Purchase]:
         try:
-            purchase_objs = await self.db_session.scalars(
-                insert(Purchase).returning(Purchase), purchases
+            purchase_results = await self.db_session.scalars(
+                insert(Purchase).returning(Purchase),
+                purchases,
             )
         except Exception as e:
             raise e
 
-        await self.db_session.commit()
-        return purchase_objs.all()
+        return purchase_results.all()
 
     async def get_all(self, page: int = 1) -> Sequence[Purchase]:
-        page = int(page)
-        if page < 1:
-            page = 1
-
         statement = (
             select(Purchase)
-            .limit(PAGINATE_PER_PAGE)
-            .offset((page - 1) * PAGINATE_PER_PAGE)
+            .limit(configs.PAGINATE_PER_PAGE)
+            .offset((page - 1) * configs.PAGINATE_PER_PAGE)
         )
         purchses = await self.db_session.scalars(statement)
         return purchses.all()
@@ -63,5 +59,17 @@ class PurchaseRepository:
         item = await self.db_session.scalar(statement)
         return item
 
-    async def update(self, purchase: Purchase):
+    async def update(
+        self, id: int, price: float | None = None, notes: str | None = None
+    ):
+        purchase = await self.get_by_id(id)
+        if not purchase:
+            raise NotFound(Purchase)
+
+        if price is not None:
+            purchase.price = price
+        if notes is not None:
+            purchase.notes = notes
+
         await self.db_session.commit()
+        return purchase

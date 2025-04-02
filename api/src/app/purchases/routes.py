@@ -1,13 +1,7 @@
 from fastapi import APIRouter
 
 from app.database import DBSessionDependency
-from app.exceptions import IntegrityError
 from app.helpers.functions import dict_from_schema
-from app.helpers.response_errors import (
-    error_response,
-    integrity_error_response,
-    not_found_response,
-)
 from app.models import Purchase
 from app.purchases import schemas
 from app.repositories import PurchaseRepository
@@ -24,17 +18,12 @@ async def add_purchase(
 ):
     purchase_repository = PurchaseRepository(db_session)
 
-    try:
-        purchase = await purchase_repository.create(
-            item_id=purchase_input.item_id,
-            receipt_id=purchase_input.receipt_id,
-            price=purchase_input.price,
-            notes=purchase_input.notes,
-        )
-    except IntegrityError as e:
-        return error_response(
-            status_code=422, content=[integrity_error_response(str(e))]
-        )
+    purchase = await purchase_repository.create(
+        item_id=purchase_input.item_id,
+        receipt_id=purchase_input.receipt_id,
+        price=purchase_input.price,
+        notes=purchase_input.notes,
+    )
 
     return {"data": {"purchase": dict_from_schema(purchase, schemas.Purchase)}}
 
@@ -76,19 +65,9 @@ async def update_purchase(
 ):
     purchase_repository = PurchaseRepository(db_session)
 
-    try:
-        purchase = await purchase_repository.get_by_id(purchase_id)
-        if not purchase:
-            return not_found_response()
-        if purchase_input.price:
-            purchase.price = purchase_input.price
-        purchase.notes = purchase_input.notes
-        await purchase_repository.update(purchase)
-    except Exception as e:
-        print(e)
-        return error_response(
-            status_code=400,
-        )
+    purchase = await purchase_repository.update(
+        purchase_id, price=purchase_input.price, notes=purchase_input.notes
+    )
 
     return {
         "data": {

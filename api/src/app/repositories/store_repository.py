@@ -3,10 +3,11 @@ from __future__ import annotations
 from typing import Sequence
 
 from sqlalchemy import func, select
+from sqlalchemy.exc import IntegrityError as SQLAIntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.envs import PAGINATE_PER_PAGE
-from app.exceptions import AlreadyExists
+from app.configs import configs
+from app.exceptions import AlreadyExists, NotFound
 from app.models import Store
 
 
@@ -14,30 +15,24 @@ class StoreRepository:
     def __init__(self, db_session: AsyncSession):
         self.db_session = db_session
 
-    async def create(self, store: Store):
-        store.name = store.name.strip()
-        db_check = await self.db_session.scalar(
-            select(Store).where(func.lower(Store.name) == store.name.lower()).limit(1)
-        )
-        if db_check:
-            raise AlreadyExists(db_check)
-
+    async def create(self, name: str):
+        store = Store(name=name)
         self.db_session.add(store)
-        await self.db_session.commit()
+        try:
+            await self.db_session.commit()
+        except SQLAIntegrityError as e:
+            await self.db_session.rollback()
+            raise AlreadyExists(e)
         return store
 
     async def count(self) -> int:
         return await self.db_session.scalar(select(func.count(Store.id)))  # type: ignore
 
     async def get_all(self, page: int = 1) -> Sequence[Store]:
-        page = int(page)
-        if page < 1:
-            page = 1
-
         statement = (
             select(Store)
-            .limit(PAGINATE_PER_PAGE)
-            .offset((page - 1) * PAGINATE_PER_PAGE)
+            .limit(configs.PAGINATE_PER_PAGE)
+            .offset((page - 1) * configs.PAGINATE_PER_PAGE)
         )
         stores = await self.db_session.scalars(statement)
         return stores.all()
@@ -48,12 +43,16 @@ class StoreRepository:
         )
         return item
 
-    async def update(self, store: Store):
-        store.name = store.name.strip()
-        db_check = await self.db_session.scalar(
-            select(Store).where(func.lower(Store.name) == store.name.lower()).limit(1)
-        )
-        if db_check and db_check.id != store.id:
-            raise AlreadyExists(db_check)
+    async def update(self, id: int, name: str) -> Store:
+        store = await self.get_by_id(id)
+        if not store:
+            raise NotFound(Store)
 
-        await self.db_session.commit()
+        store.name = name
+
+        try:
+            await self.db_session.commit()
+        except SQLAIntegrityError as e:
+            await self.db_session.rollback()
+            raise AlreadyExists(e)
+        return store

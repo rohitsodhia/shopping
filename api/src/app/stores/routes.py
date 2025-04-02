@@ -1,15 +1,7 @@
 from fastapi import APIRouter
 
 from app.database import DBSessionDependency
-from app.exceptions import AlreadyExists
 from app.helpers.functions import dict_from_schema
-from app.helpers.response_errors import (
-    already_exists_error,
-    error_response,
-    fields_missing_response,
-    not_found_response,
-)
-from app.models.store import Store
 from app.repositories import StoreRepository
 from app.stores import schemas
 
@@ -22,13 +14,7 @@ stores = APIRouter(prefix="/stores")
 )
 async def add_store(store_input: schemas.StoreInput, db_session: DBSessionDependency):
     store_repository = StoreRepository(db_session)
-    try:
-        store = await store_repository.create(Store(name=store_input.name))
-    except AlreadyExists as e:
-        return error_response(
-            status_code=400,
-            content=[already_exists_error(dict_from_schema(e.cls, schemas.Store))],
-        )
+    store = await store_repository.create(name=store_input.name)
 
     return {"data": {"store": dict_from_schema(store, schemas.Store)}}
 
@@ -44,12 +30,7 @@ async def list_stores(db_session: DBSessionDependency, page: int = 1):
     if page < 1:
         page = 1
 
-    try:
-        stores = await store_repository.get_all()
-    except:
-        return error_response(
-            status_code=400,
-        )
+    stores = await store_repository.get_all(page=page)
 
     return {
         "data": {
@@ -69,24 +50,7 @@ async def update_store(
 ):
     store_repository = StoreRepository(db_session)
 
-    if not store_input.name:
-        return fields_missing_response(["name"])
-
-    try:
-        store = await store_repository.get_by_id(store_id)
-        if not store:
-            return not_found_response()
-        store.name = store_input.name
-        await store_repository.update(store)
-    except AlreadyExists as e:
-        return error_response(
-            status_code=400,
-            content=[already_exists_error(dict_from_schema(e.cls, schemas.Store))],
-        )
-    except Exception as e:
-        return error_response(
-            status_code=400,
-        )
+    store = await store_repository.update(id=store_id, name=store_input.name)
 
     return {
         "data": {

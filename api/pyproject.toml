@@ -10,16 +10,17 @@ dependencies = [
     "bcrypt~=4.2",
     "email-validator~=2.2",
     "fastapi~=0.112",
-    "psycopg2-binary~=2.9",
+    "psycopg[binary,pool]~=3.2",
     "pyjwt[crypto]~=2.9",
     "python-dotenv~=1.0",
     "sqlalchemy~=2.0",
-    "uvicorn[standard]~=0.34"
+    "uvicorn[standard]~=0.34",
 ]
 
 [tool.uv]
 dev-dependencies = [
     "black~=24.8",
+    "httpx~=0.28",
     "icecream~=2.1",
     "ipdb~=0.13",
     "isort~=5.13",
