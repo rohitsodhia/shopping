@@ -10,16 +10,6 @@ from app.configs import configs
 from app.exceptions import AlreadyExists, NotFound
 from app.models import Purchase
 
-PurchaseDict = TypedDict(
-    "PurchaseDict",
-    {
-        "item_id": int,
-        "receipt_id": int,
-        "price": float,
-        "notes": NotRequired[str],
-    },
-)
-
 
 class PurchaseRepository:
     def __init__(self, db_session: AsyncSession):
@@ -43,15 +33,12 @@ class PurchaseRepository:
 
     async def bulk_create(
         self,
-        purchases: list[PurchaseDict],
+        purchases: list[dict],
     ) -> Sequence[Purchase]:
-        purchase_objs: list[Purchase] = []
-        for purchase in purchases:
-            purchase_objs.append(Purchase(**purchase))
         try:
             purchase_results = await self.db_session.scalars(
                 insert(Purchase).returning(Purchase),
-                [o.__dict__ for o in purchase_objs],
+                purchases,
             )
         except Exception as e:
             raise e
