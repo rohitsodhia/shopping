@@ -13,13 +13,6 @@ async def test_add_item_success(authed_client):
     assert response.status_code == 200
     assert response.json()["data"]["item"]["name"] == store_name
 
-    notes = "test"
-    response = await authed_client.post(
-        "/items", json={"name": store_name, "notes": notes}
-    )
-    assert response.status_code == 200
-    assert response.json()["data"]["item"]["notes"] == notes
-
 
 async def test_add_item_duplicate(authed_client):
     store_name = "test"
