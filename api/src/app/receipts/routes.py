@@ -45,7 +45,7 @@ async def list_receipts(
     if page < 1:
         page = 1
 
-    receipts = await receipt_repository.get_all(store_ids=store_ids)
+    receipts = await receipt_repository.get_all(page=page, store_ids=store_ids)
 
     if receipts:
         return {
@@ -69,7 +69,7 @@ async def get_receipt(db_session: DBSessionDependency, receipt_id: int):
         raise NotFound(Receipt)
     return {
         "data": {
-            "item": dict_from_schema(receipt, schemas.Receipt),
+            "receipt": dict_from_schema(receipt, schemas.Receipt),
         },
     }
 
