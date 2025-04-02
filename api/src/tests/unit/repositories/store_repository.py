@@ -43,7 +43,6 @@ class TestStoreRepository:
             [{"name": "test1"}, {"name": "test2"}, {"name": "test3"}],
         )
 
-        configs.PAGINATE_PER_PAGE = 10
         stores_in_db = await store_repository.get_all()
         assert len(stores_in_db) == 3
 

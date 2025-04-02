@@ -83,8 +83,6 @@ class TestReceiptRepository:
                 {"store_id": store2.id, "date": date},
             ],
         )
-
-        configs.PAGINATE_PER_PAGE = 10
         assert len(await receipt_repository.get_all()) == 3
 
         assert len(await receipt_repository.get_all(store_ids=store1.id)) == 2

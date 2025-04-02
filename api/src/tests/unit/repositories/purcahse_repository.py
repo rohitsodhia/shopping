@@ -94,7 +94,6 @@ class TestPurchaseRepository:
             ],
         )
 
-        configs.PAGINATE_PER_PAGE = 10
         purchases_in_db = await purchase_repository.get_all()
         assert len(purchases_in_db) == 3
 
