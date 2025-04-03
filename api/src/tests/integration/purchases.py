@@ -18,7 +18,7 @@ async def test_add_purchase_success(authed_client, db_session, receipt_generator
     db_session.add(item)
     await db_session.flush()
 
-    price = round(random.uniform(1, 5), 2)
+    price = random.randint(1, 10)
     response = await authed_client.post(
         "/purchases",
         json={"item_id": item.id, "receipt_id": receipt.id, "price": price},
@@ -34,7 +34,7 @@ async def test_add_bulk_purchases_success(authed_client, db_session, receipt_gen
     item = Item(name="test")
     db_session.add(item)
     await db_session.flush()
-    price = round(random.uniform(1, 5), 2)
+    price = random.randint(1, 10)
 
     purchases = [{"item_id": item.id, "price": price} for i in range(5)]
     response = await authed_client.post(
@@ -61,12 +61,12 @@ async def test_update_purchase_success(authed_client, db_session, receipt_genera
     db_session.add(item)
     await db_session.flush()
     purchase = Purchase(
-        item_id=item.id, receipt_id=receipt.id, price=round(random.uniform(1, 5), 2)
+        item_id=item.id, receipt_id=receipt.id, price=random.randint(1, 10)
     )
     db_session.add(purchase)
     await db_session.flush()
 
-    new_price = round(random.uniform(1, 5), 2)
+    new_price = random.randint(1, 10)
     response = await authed_client.patch(
         f"/purchases/{purchase.id}",
         json={"price": new_price, "notes": "test"},

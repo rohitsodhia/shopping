@@ -1,12 +1,10 @@
 from pydantic import BaseModel
 
-from app.models import store
-
 
 class NewPurchaseInput(BaseModel):
     item_id: int
     receipt_id: int
-    price: float
+    price: int
     notes: str | None = None
 
 
@@ -14,7 +12,7 @@ class Purchase(BaseModel):
     id: int
     item_id: int
     receipt_id: int
-    price: float
+    price: int
     notes: str | None = None
 
 
@@ -28,7 +26,7 @@ class NewPurchaseResponse(BaseModel):
 
 class NewPurchaseBulkPurchaseInput(BaseModel):
     item_id: int
-    price: float
+    price: int
     notes: str | None = None
 
 
@@ -46,7 +44,7 @@ class NewPurchaseBulkResponse(BaseModel):
 
 
 class UpdatePurchaseInput(BaseModel):
-    price: float
+    price: int
     notes: str | None = None
 
 

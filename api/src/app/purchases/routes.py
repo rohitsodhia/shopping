@@ -40,10 +40,10 @@ async def add_purchase_bulk(
     purchases_data: list[dict] = []
     for purchase in purchase_input.purchases:
         purchases_data.append(
-            Purchase(
+            {
                 **dict_from_schema(purchase, schemas.NewPurchaseBulkPurchaseInput),
-                receipt_id=purchase_input.receipt_id
-            ).__dict__
+                "receipt_id": purchase_input.receipt_id,
+            }
         )
 
     purchases = await purchase_repository.bulk_create(purchases_data)

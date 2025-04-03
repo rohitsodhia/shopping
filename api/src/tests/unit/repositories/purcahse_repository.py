@@ -24,7 +24,7 @@ class TestPurchaseRepository:
         await db_session.commit()
 
         purchase_repository = PurchaseRepository(db_session)
-        price = 1.23
+        price = random.randint(1, 10)
         purchase = await purchase_repository.create(
             item_id=item.id, receipt_id=receipt.id, price=price
         )
@@ -36,7 +36,6 @@ class TestPurchaseRepository:
         assert purchase.price == purchase_from_db.price
 
         purchase_repository = PurchaseRepository(db_session)
-        price = 1.23
         purchase = await purchase_repository.create(
             item_id=item.id, receipt_id=receipt.id, price=price, notes="test"
         )
@@ -58,8 +57,8 @@ class TestPurchaseRepository:
         await db_session.commit()
 
         purchase_repository = PurchaseRepository(db_session)
-        price1 = round(random.uniform(1, 5), 2)
-        price2 = round(random.uniform(1, 5), 2)
+        price1 = random.randint(1, 10)
+        price2 = random.randint(1, 10)
         purchase1, purchase2 = await purchase_repository.bulk_create(
             [
                 {"item_id": item.id, "receipt_id": receipt.id, "price": price1},
@@ -88,9 +87,9 @@ class TestPurchaseRepository:
         purchases_inserted = await db_session.scalars(
             insert(Purchase).returning(Purchase),
             [
-                {"item_id": item.id, "receipt_id": receipt.id, "_price": 1},
-                {"item_id": item.id, "receipt_id": receipt.id, "_price": 1},
-                {"item_id": item.id, "receipt_id": receipt.id, "_price": 1},
+                {"item_id": item.id, "receipt_id": receipt.id, "price": 1},
+                {"item_id": item.id, "receipt_id": receipt.id, "price": 1},
+                {"item_id": item.id, "receipt_id": receipt.id, "price": 1},
             ],
         )
 
@@ -117,9 +116,9 @@ class TestPurchaseRepository:
         purchases_inserted = await db_session.scalars(
             insert(Purchase).returning(Purchase),
             [
-                {"item_id": item.id, "receipt_id": receipt.id, "_price": 1},
-                {"item_id": item.id, "receipt_id": receipt.id, "_price": 1},
-                {"item_id": item.id, "receipt_id": receipt.id, "_price": 1},
+                {"item_id": item.id, "receipt_id": receipt.id, "price": 1},
+                {"item_id": item.id, "receipt_id": receipt.id, "price": 1},
+                {"item_id": item.id, "receipt_id": receipt.id, "price": 1},
             ],
         )
         purchase1, purchase2, purchase3 = purchases_inserted.all()
@@ -140,7 +139,7 @@ class TestPurchaseRepository:
         receipt = Receipt(date=datetime.date.today(), store_id=store.id)
         db_session.add(receipt)
         await db_session.commit()
-        price = 1.23
+        price = random.randint(1, 10)
         purchase = Purchase(
             item_id=item.id, receipt_id=receipt.id, price=price, notes="test"
         )
@@ -148,7 +147,7 @@ class TestPurchaseRepository:
         await db_session.commit()
 
         purchase_repository = PurchaseRepository(db_session)
-        new_price = 2.34
+        new_price = random.randint(1, 10)
         purchase = await purchase_repository.update(
             id=purchase.id, price=new_price, notes="test more"
         )

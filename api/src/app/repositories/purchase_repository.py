@@ -59,9 +59,7 @@ class PurchaseRepository:
         item = await self.db_session.scalar(statement)
         return item
 
-    async def update(
-        self, id: int, price: float | None = None, notes: str | None = None
-    ):
+    async def update(self, id: int, price: int | None = None, notes: str | None = None):
         purchase = await self.get_by_id(id)
         if not purchase:
             raise NotFound(Purchase)
