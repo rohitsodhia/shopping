@@ -5,13 +5,13 @@ from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app import exceptions, middleware, route_exceptions
-from app.auth.routes import auth
+from app.api.auth.routes import auth
+from app.api.items.routes import items
+from app.api.purchases.routes import purchases
+from app.api.receipts.routes import receipts
+from app.api.stores.routes import stores
 from app.configs import configs
 from app.database import get_db_session, session_manager
-from app.items.routes import items
-from app.purchases.routes import purchases
-from app.receipts.routes import receipts
-from app.stores.routes import stores
 
 seed()
 

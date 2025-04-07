@@ -6,7 +6,7 @@ from app.models import Purchase
 from app.purchases import schemas
 from app.repositories import PurchaseRepository
 
-purchases = APIRouter(prefix="/purchases")
+purchases = APIRouter(prefix="/api/purchases")
 
 
 @purchases.post(

@@ -20,7 +20,7 @@ async def test_add_purchase_success(authed_client, db_session, receipt_generator
 
     price = random.randint(1, 10)
     response = await authed_client.post(
-        "/purchases",
+        "/api/purchases",
         json={"item_id": item.id, "receipt_id": receipt.id, "price": price},
     )
     assert response.status_code == 200
@@ -38,7 +38,7 @@ async def test_add_bulk_purchases_success(authed_client, db_session, receipt_gen
 
     purchases = [{"item_id": item.id, "price": price} for i in range(5)]
     response = await authed_client.post(
-        "/purchases/bulk",
+        "/api/purchases/bulk",
         json={"receipt_id": receipt.id, "purchases": purchases},
     )
     assert response.status_code == 200
@@ -47,7 +47,7 @@ async def test_add_bulk_purchases_success(authed_client, db_session, receipt_gen
 
     purchases = [{"item_id": item.id, "price": price} for i in range(2)]
     response = await authed_client.post(
-        "/purchases/bulk",
+        "/api/purchases/bulk",
         json={"receipt_id": receipt.id, "purchases": purchases},
     )
     assert response.status_code == 200
@@ -68,7 +68,7 @@ async def test_update_purchase_success(authed_client, db_session, receipt_genera
 
     new_price = random.randint(1, 10)
     response = await authed_client.patch(
-        f"/purchases/{purchase.id}",
+        f"/api/purchases/{purchase.id}",
         json={"price": new_price, "notes": "test"},
     )
     assert response.status_code == 200

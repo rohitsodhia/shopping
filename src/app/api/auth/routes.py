@@ -7,7 +7,7 @@ from app.database import DBSessionDependency
 from app.helpers.decorators import public
 from app.helpers.responses import error_response
 
-auth = APIRouter(prefix="/auth")
+auth = APIRouter(prefix="/api/auth")
 
 
 @auth.post(

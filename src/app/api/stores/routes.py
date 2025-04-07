@@ -5,7 +5,7 @@ from app.helpers.functions import dict_from_schema
 from app.repositories import StoreRepository
 from app.stores import schemas
 
-stores = APIRouter(prefix="/stores")
+stores = APIRouter(prefix="/api/stores")
 
 
 @stores.post(

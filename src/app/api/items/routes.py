@@ -8,7 +8,7 @@ from app.items import schemas
 from app.models import Item
 from app.repositories import ItemRepository
 
-items = APIRouter(prefix="/items")
+items = APIRouter(prefix="/api/items")
 
 
 @items.post(

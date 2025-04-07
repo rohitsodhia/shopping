@@ -9,7 +9,7 @@ from app.models import Receipt
 from app.receipts import schemas
 from app.repositories import ReceiptRepository
 
-receipts = APIRouter(prefix="/receipts")
+receipts = APIRouter(prefix="/api/receipts")
 
 
 @receipts.post(

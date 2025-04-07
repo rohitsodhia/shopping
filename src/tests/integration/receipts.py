@@ -17,7 +17,7 @@ async def test_add_receipt_success(authed_client, db_session, notes):
 
     date = "2022-01-01"
     response = await authed_client.post(
-        "/receipts", json={"store_id": store.id, "date": date, "notes": notes}
+        "/api/receipts", json={"store_id": store.id, "date": date, "notes": notes}
     )
     assert response.status_code == 200
     assert response.json()["data"]["receipt"]["date"] == date
@@ -41,7 +41,7 @@ async def test_list_receipts_success(authed_client, db_session):
             {"store_id": store2.id, "date": date},
         ],
     )
-    response = await authed_client.get("/receipts")
+    response = await authed_client.get("/api/receipts")
     assert response.status_code == 200
     response_body = response.json()
     assert len(response_body["data"]["receipts"]) == 6
@@ -49,12 +49,12 @@ async def test_list_receipts_success(authed_client, db_session):
     assert response_body["data"]["receipts"][0]["date"] == date.isoformat()
 
     configs.PAGINATE_PER_PAGE = 5
-    response = await authed_client.get("/receipts")
+    response = await authed_client.get("/api/receipts")
     assert response.status_code == 200
     response_body = response.json()
     assert len(response_body["data"]["receipts"]) == 5
     assert response_body["data"]["total"] == 6
-    response = await authed_client.get("/receipts", params={"page": 2})
+    response = await authed_client.get("/api/receipts", params={"page": 2})
     response_body = response.json()
     assert len(response_body["data"]["receipts"]) == 1
     assert response_body["data"]["total"] == 6
@@ -79,13 +79,13 @@ async def test_list_receipts_success_by_store(authed_client, db_session):
             {"store_id": store3.id, "date": date},
         ],
     )
-    response = await authed_client.get("/receipts", params={"store_ids": store1.id})
+    response = await authed_client.get("/api/receipts", params={"store_ids": store1.id})
     assert response.status_code == 200
     response_body = response.json()
     assert len(response_body["data"]["receipts"]) == 4
 
     response = await authed_client.get(
-        "/receipts", params={"store_ids": [store1.id, store2.id]}
+        "/api/receipts", params={"store_ids": [store1.id, store2.id]}
     )
     assert response.status_code == 200
     response_body = response.json()
@@ -100,14 +100,14 @@ async def test_get_receipt_success(authed_client, db_session):
     db_session.add(receipt)
     await db_session.flush()
 
-    response = await authed_client.get(f"/receipts/{receipt.id}")
+    response = await authed_client.get(f"/api/receipts/{receipt.id}")
     assert response.status_code == 200
     response_body = response.json()
     assert response_body["data"]["receipt"]["date"] == receipt.date.isoformat()
 
 
 async def test_get_receipt_not_found(authed_client):
-    response = await authed_client.get(f"/receipts/1")
+    response = await authed_client.get(f"/api/receipts/1")
     assert response.status_code == 404
 
 
@@ -121,7 +121,8 @@ async def test_update_receipt_success(authed_client, db_session):
 
     new_date = receipt.date + datetime.timedelta(days=1)
     response = await authed_client.patch(
-        f"/receipts/{receipt.id}", json={"date": new_date.isoformat(), "notes": "test"}
+        f"/api/receipts/{receipt.id}",
+        json={"date": new_date.isoformat(), "notes": "test"},
     )
     assert response.status_code == 200
     response_body = response.json()
