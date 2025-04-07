@@ -7,5 +7,5 @@ docker compose exec postgres psql postgresql://$DATABASE_USER:$DATABASE_PASSWORD
     CREATE SCHEMA public;'
 
 echo ""
-./api/src/scripts/alembic.sh upgrade head
-# docker compose exec api uv run ../scripts/populate_db.py
+./src/scripts/alembic.sh upgrade head
+# docker compose exec python uv run ../scripts/populate_db.py

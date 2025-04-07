@@ -25,12 +25,12 @@ repos:
       - id: run-in-subdirectory
         alias: black
         name: Format server code with Black
-        args: ["api", "uv run black"]
+        args: ["python", "uv run black"]
         types: [ python ]
-        files: ^api/
+        files: ^src/
       - id: run-in-subdirectory
         alias: isort
         name: Format server code with isort
-        args: ["api", "uv run isort"]
+        args: ["python", "uv run isort"]
         types: [ text ]
-        files: ^api/
+        files: ^src/

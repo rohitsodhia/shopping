@@ -1,4 +1,3 @@
-.idea
+.venv
 .vscode
-frontend/
-!frontend/dist/
+__pycache__
