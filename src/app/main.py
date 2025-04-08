@@ -11,6 +11,7 @@ from app.api.items.routes import items_api
 from app.api.purchases.routes import purchases_api
 from app.api.receipts.routes import receipts_api
 from app.api.stores.routes import stores_api
+from app.auth.routes import auth
 from app.configs import configs
 from app.database import get_db_session, session_manager
 
@@ -53,6 +54,7 @@ def create_app(init_db=True) -> FastAPI:
 
     app.mount("/static", StaticFiles(directory="static"), name="static")
 
+    app.include_router(auth)
     app.include_router(auth_api)
     app.include_router(items_api)
     app.include_router(purchases_api)
