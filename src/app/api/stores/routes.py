@@ -1,14 +1,14 @@
 from fastapi import APIRouter
 
+from app.api.stores import schemas
 from app.database import DBSessionDependency
 from app.helpers.functions import dict_from_schema
 from app.repositories import StoreRepository
-from app.stores import schemas
 
-stores = APIRouter(prefix="/api/stores")
+stores_api = APIRouter(prefix="/api/stores")
 
 
-@stores.post(
+@stores_api.post(
     "",
     response_model=schemas.StoreResponse,
 )
@@ -19,7 +19,7 @@ async def add_store(store_input: schemas.StoreInput, db_session: DBSessionDepend
     return {"data": {"store": dict_from_schema(store, schemas.Store)}}
 
 
-@stores.get(
+@stores_api.get(
     "",
     response_model=schemas.ListStoresResponse,
 )
@@ -41,7 +41,7 @@ async def list_stores(db_session: DBSessionDependency, page: int = 1):
     }
 
 
-@stores.patch(
+@stores_api.patch(
     "/{store_id}",
     response_model=schemas.StoreResponse,
 )

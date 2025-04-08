@@ -1,15 +1,14 @@
 from fastapi import APIRouter
 
+from app.api.purchases import schemas
 from app.database import DBSessionDependency
 from app.helpers.functions import dict_from_schema
-from app.models import Purchase
-from app.purchases import schemas
 from app.repositories import PurchaseRepository
 
-purchases = APIRouter(prefix="/api/purchases")
+purchases_api = APIRouter(prefix="/api/purchases")
 
 
-@purchases.post(
+@purchases_api.post(
     "",
     response_model=schemas.NewPurchaseResponse,
 )
@@ -28,7 +27,7 @@ async def add_purchase(
     return {"data": {"purchase": dict_from_schema(purchase, schemas.Purchase)}}
 
 
-@purchases.post(
+@purchases_api.post(
     "/bulk",
     response_model=schemas.NewPurchaseBulkResponse,
 )
@@ -54,7 +53,7 @@ async def add_purchase_bulk(
     }
 
 
-@purchases.patch(
+@purchases_api.patch(
     "/{purchase_id}",
     response_model=schemas.UpdatePurchaseResponse,
 )

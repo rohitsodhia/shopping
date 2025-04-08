@@ -2,17 +2,17 @@ from typing import Annotated
 
 from fastapi import APIRouter, Query
 
+from app.api.receipts import schemas
 from app.database import DBSessionDependency
 from app.exceptions import NotFound
 from app.helpers.functions import dict_from_schema
 from app.models import Receipt
-from app.receipts import schemas
 from app.repositories import ReceiptRepository
 
-receipts = APIRouter(prefix="/api/receipts")
+receipts_api = APIRouter(prefix="/api/receipts")
 
 
-@receipts.post(
+@receipts_api.post(
     "",
     response_model=schemas.ReceiptResponse,
 )
@@ -30,7 +30,7 @@ async def add_receipt(
     return {"data": {"receipt": dict_from_schema(receipt, schemas.Receipt)}}
 
 
-@receipts.get(
+@receipts_api.get(
     "",
     response_model=schemas.ListReceiptsResponse,
 )
@@ -57,7 +57,7 @@ async def list_receipts(
         }
 
 
-@receipts.get(
+@receipts_api.get(
     "/{receipt_id}",
     response_model=schemas.ReceiptResponse,
 )
@@ -74,7 +74,7 @@ async def get_receipt(db_session: DBSessionDependency, receipt_id: int):
     }
 
 
-@receipts.patch(
+@receipts_api.patch(
     "/{receipt_id}",
     response_model=schemas.ReceiptResponse,
 )

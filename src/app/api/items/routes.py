@@ -1,17 +1,17 @@
 from fastapi import APIRouter
 
 from app import schemas as global_schemas
+from app.api.items import schemas
 from app.database import DBSessionDependency
 from app.exceptions import NotFound
 from app.helpers.functions import dict_from_schema
-from app.items import schemas
 from app.models import Item
 from app.repositories import ItemRepository
 
-items = APIRouter(prefix="/api/items")
+items_api = APIRouter(prefix="/api/items")
 
 
-@items.post(
+@items_api.post(
     "",
     response_model=schemas.ItemResponse,
     responses={422: {"model": global_schemas.AlreadyExistsResponse}},
@@ -23,7 +23,7 @@ async def add_item(item_input: schemas.NewItemInput, db_session: DBSessionDepend
     return {"data": {"item": dict_from_schema(item, schemas.Item)}}
 
 
-@items.get(
+@items_api.get(
     "",
     response_model=schemas.ListItemsResponse,
 )
@@ -47,7 +47,7 @@ async def list_items(
     }
 
 
-@items.get(
+@items_api.get(
     "/{item_id}",
     response_model=schemas.GetItemResponse,
 )
@@ -64,7 +64,7 @@ async def get_item(db_session: DBSessionDependency, item_id: int):
     }
 
 
-@items.patch(
+@items_api.patch(
     "/{item_id}",
     response_model=schemas.GetItemResponse,
 )

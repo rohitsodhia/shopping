@@ -1,16 +1,16 @@
 import bcrypt
 from fastapi import APIRouter
 
-from app.auth import functions, schemas
+from app.api.auth import functions, schemas
 from app.configs import configs
 from app.database import DBSessionDependency
 from app.helpers.decorators import public
 from app.helpers.responses import error_response
 
-auth = APIRouter(prefix="/api/auth")
+auth_api = APIRouter(prefix="/api/auth")
 
 
-@auth.post(
+@auth_api.post(
     "/login",
     response_model=schemas.AuthResponse,
     responses={422: {"model": schemas.AuthFailed}},

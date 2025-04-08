@@ -5,11 +5,11 @@ from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app import exceptions, middleware, route_exceptions
-from app.api.auth.routes import auth
-from app.api.items.routes import items
-from app.api.purchases.routes import purchases
-from app.api.receipts.routes import receipts
-from app.api.stores.routes import stores
+from app.api.auth.routes import auth_api
+from app.api.items.routes import items_api
+from app.api.purchases.routes import purchases_api
+from app.api.receipts.routes import receipts_api
+from app.api.stores.routes import stores_api
 from app.configs import configs
 from app.database import get_db_session, session_manager
 
@@ -50,10 +50,10 @@ def create_app(init_db=True) -> FastAPI:
         allow_origins=["*"],
     )
 
-    app.include_router(auth)
-    app.include_router(items)
-    app.include_router(purchases)
-    app.include_router(stores)
-    app.include_router(receipts)
+    app.include_router(auth_api)
+    app.include_router(items_api)
+    app.include_router(purchases_api)
+    app.include_router(stores_api)
+    app.include_router(receipts_api)
 
     return app
