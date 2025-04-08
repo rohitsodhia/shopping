@@ -1,7 +1,8 @@
 import bcrypt
 from fastapi import APIRouter
 
-from app.api.auth import functions, schemas
+from app.api.auth import schemas
+from app.auth import functions
 from app.configs import configs
 from app.database import DBSessionDependency
 from app.helpers.decorators import public
