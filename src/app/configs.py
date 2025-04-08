@@ -1,5 +1,7 @@
 import os
 
+from fastapi.templating import Jinja2Templates
+
 
 class ConfigStore:
     def from_env(self):
@@ -21,3 +23,5 @@ class ConfigStore:
 
 configs = ConfigStore()
 configs.from_env()
+
+templates = Jinja2Templates(directory="templates")

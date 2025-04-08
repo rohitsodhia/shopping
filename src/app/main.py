@@ -3,6 +3,7 @@ from random import seed
 
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from app import exceptions, middleware, route_exceptions
 from app.api.auth.routes import auth_api
@@ -49,6 +50,8 @@ def create_app(init_db=True) -> FastAPI:
         CORSMiddleware,
         allow_origins=["*"],
     )
+
+    app.mount("/static", StaticFiles(directory="static"), name="static")
 
     app.include_router(auth_api)
     app.include_router(items_api)
