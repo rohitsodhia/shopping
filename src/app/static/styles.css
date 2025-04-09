@@ -78,6 +78,32 @@ body {
     padding: 0.5em;
 }
 
+nav {
+    border-bottom: 1px solid var(--foreground);
+    ul {
+        display: flex;
+        padding: 0;
+    }
+
+    li {
+        list-style: none;
+    }
+
+    a {
+        display: block;
+        padding: 0.5em;
+    }
+}
+
+a {
+    color: var(--foreground);
+    text-decoration: none;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
 h1 {
     font-size: 1.75em;
     margin: 0.25em 0 0.5em;
