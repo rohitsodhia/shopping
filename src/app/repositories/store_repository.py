@@ -33,6 +33,7 @@ class StoreRepository:
             select(Store)
             .limit(configs.PAGINATE_PER_PAGE)
             .offset((page - 1) * configs.PAGINATE_PER_PAGE)
+            .order_by(Store.name)
         )
         stores = await self.db_session.scalars(statement)
         return stores.all()
