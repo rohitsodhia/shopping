@@ -78,21 +78,13 @@ body {
     padding: 0.5em;
 }
 
-nav {
-    border-bottom: 1px solid var(--foreground);
-    ul {
-        display: flex;
-        padding: 0;
-    }
+ul {
+    display: flex;
+    padding: 0;
+}
 
-    li {
-        list-style: none;
-    }
-
-    a {
-        display: block;
-        padding: 0.5em;
-    }
+li {
+    list-style: none;
 }
 
 a {
@@ -101,6 +93,15 @@ a {
 
     &:hover {
         text-decoration: underline;
+    }
+}
+
+nav {
+    border-bottom: 1px solid var(--foreground);
+
+    a {
+        display: block;
+        padding: 0.5em;
     }
 }
 
@@ -128,4 +129,23 @@ button {
     margin: 1em 0;
     padding: 0.6em;
     border: 1px solid #cc0000;
+}
+
+#list_stores {
+    margin-top: 1em;
+
+    ul {
+        display: block;
+    }
+
+    li {
+        display: flex;
+        align-items: center;
+        gap: 1em;
+        padding: 0.5em 0;
+    }
+
+    span {
+        font-size: 1.3em;
+    }
 }
