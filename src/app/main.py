@@ -1,8 +1,9 @@
 from contextlib import asynccontextmanager
 from random import seed
 
-from fastapi import Depends, FastAPI
+from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 
 from app import exceptions, middleware, route_exceptions
@@ -12,10 +13,15 @@ from app.api.purchases.routes import purchases_api
 from app.api.receipts.routes import receipts_api
 from app.api.stores.routes import stores_api
 from app.auth.routes import auth
-from app.configs import configs
+from app.configs import configs, templates
 from app.database import get_db_session, session_manager
+from app.stores.routes import stores
 
 seed()
+
+
+async def home_page(request: Request):
+    return templates.TemplateResponse(request=request, name="home.html")
 
 
 def create_app(init_db=True) -> FastAPI:
@@ -54,7 +60,11 @@ def create_app(init_db=True) -> FastAPI:
 
     app.mount("/static", StaticFiles(directory="static"), name="static")
 
+    app.add_api_route("/", home_page, response_class=HTMLResponse)
+
     app.include_router(auth)
+    app.include_router(stores)
+
     app.include_router(auth_api)
     app.include_router(items_api)
     app.include_router(purchases_api)
