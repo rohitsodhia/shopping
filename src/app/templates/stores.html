@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+{% block content %}
+    <h1>Stores</h1>
+    <form action="/stores" method="post">
+        <label for="name">Name:</label>
+        <input type="name" id="name" name="name">
+        <button type="submit">Submit</button>
+    </form>
+{% endblock %}
