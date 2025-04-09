@@ -6,11 +6,16 @@ from app.configs import configs
 
 
 async def validate_jwt(request: Request):
-    token = request.headers.get("Authorization")
+    path = request.scope["route"].path
+    if path.startswith("/api/"):
+        token = request.headers.get("Authorization")
+        if token:
+            token = token[7:]
+    else:
+        token = request.cookies.get("auth")
     request.scope["auth"] = None
     request.scope["user"] = None
-    if token and token[:7] == "Bearer ":
-        token = token[7:]
+    if token:
         try:
             jwt_body = jwt.decode(
                 token,
@@ -26,11 +31,14 @@ async def check_authorization(request: Request):
     public = getattr(request.scope["route"].endpoint, "is_public", False)
 
     path = request.scope["route"].path
-    if not public and not path.startswith("/api/"):
-        raise HTTPException(
-            status_code=302,
-            detail="Not authorized",
-            headers={"Location": "/login"},
-        )
-    elif not public and request.scope["user"] == None:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
+    if not public and request.scope["user"] == None:
+        if not path.startswith("/api/"):
+            raise HTTPException(
+                status_code=302,
+                detail="Not authorized",
+                headers={"Location": "/login"},
+            )
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden"
+            )

@@ -3,6 +3,9 @@
 {% block content %}
     <h1>Login</h1>
     <form action="/login" method="post">
+        {% if incorrect %}
+        <p class="error">Incorrect password</p>
+        {% endif %}
         <label for="password">Password:</label>
         <input type="password" id="password" name="password">
         <button type="submit">Login</button>

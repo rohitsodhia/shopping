@@ -13,8 +13,10 @@ auth = APIRouter(prefix="/login")
 
 @auth.get("", response_class=HTMLResponse)
 @public
-async def login_page(request: Request):
-    return templates.TemplateResponse(request=request, name="login.html", context={})
+async def login_page(request: Request, incorrect: int = 0):
+    return templates.TemplateResponse(
+        request=request, name="login.html", context={"incorrect": incorrect}
+    )
 
 
 @auth.post("", response_class=RedirectResponse)
