@@ -1,8 +1,8 @@
 {% extends "base.html" %}
-{% block title %}Stores{% endblock %}
+{% block title %}Items{% endblock %}
 {% block content %}
-    <h1>Stores</h1>
-    <form action="/stores" method="post">
+    <h1>Items</h1>
+    <form action="/items" method="post">
         {% if duplicate %}
         <p class="error">Store already exists</p>
         {% endif %}
@@ -13,10 +13,10 @@
 
     <div class="list-rows">
         <ul>
-            {% for store in stores %}
+            {% for item in items %}
             <li>
-                <span>{{ store.name }}</span>
-                <a href="/stores/{{ store.id }}"><img src="{{ url_for('static', path='/images/edit.svg') }}"></a>
+                <span>{{ item.name }}</span>
+                <a href="/items/{{ item.id }}"><img src="{{ url_for('static', path='/images/edit.svg') }}"></a>
             </li>
             {% endfor %}
         </ul>

@@ -15,6 +15,7 @@ from app.api.stores.routes import stores_api
 from app.auth.routes import auth
 from app.configs import configs, templates
 from app.database import get_db_session, session_manager
+from app.items.routes import items
 from app.stores.routes import stores
 
 seed()
@@ -63,12 +64,13 @@ def create_app(init_db=True) -> FastAPI:
     app.add_api_route("/", home_page, response_class=HTMLResponse)
 
     app.include_router(auth)
+    app.include_router(items)
     app.include_router(stores)
 
     app.include_router(auth_api)
     app.include_router(items_api)
     app.include_router(purchases_api)
-    app.include_router(stores_api)
     app.include_router(receipts_api)
+    app.include_router(stores_api)
 
     return app

@@ -131,7 +131,7 @@ button {
     border: 1px solid #cc0000;
 }
 
-#list_stores {
+.list-rows {
     margin-top: 1em;
 
     ul {
@@ -147,5 +147,24 @@ button {
 
     span {
         font-size: 1.3em;
+    }
+}
+
+.edit-form {
+    & > div {
+        display: flex;
+        align-items: center;
+        gap: 1em;
+        padding: 0.5em 0;
+    }
+
+    .textarea-wrapper {
+        label {
+            align-self: flex-start;
+        }
+    }
+
+    textarea {
+        width: 100%;
     }
 }

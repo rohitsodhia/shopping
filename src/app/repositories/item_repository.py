@@ -39,8 +39,10 @@ class ItemRepository:
     ) -> Sequence[Item]:
         statement = select(Item)
 
-        statement = statement.limit(configs.PAGINATE_PER_PAGE).offset(
-            (page - 1) * configs.PAGINATE_PER_PAGE
+        statement = (
+            statement.limit(configs.PAGINATE_PER_PAGE)
+            .offset((page - 1) * configs.PAGINATE_PER_PAGE)
+            .order_by(Item.name)
         )
         if name_like:
             statement = statement.where(Item.name.like(f"%{name_like}%"))
