@@ -7,16 +7,16 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 
 from app import exceptions, middleware, route_exceptions
-from app.api.auth.routes import auth_api
-from app.api.items.routes import items_api
-from app.api.purchases.routes import purchases_api
-from app.api.receipts.routes import receipts_api
-from app.api.stores.routes import stores_api
-from app.auth.routes import auth
+from app.api.auth.routes import auth_api as auth_api_routes
+from app.api.items.routes import items_api as items_api_routes
+from app.api.purchases.routes import purchases_api as purchases_api_routes
+from app.api.receipts.routes import receipts_api as receipts_api_routes
+from app.api.stores.routes import stores_api as stores_api_routes
+from app.auth.routes import auth as auth_routes
 from app.configs import configs, templates
 from app.database import get_db_session, session_manager
-from app.items.routes import items
-from app.stores.routes import stores
+from app.items.routes import items as items_routes
+from app.stores.routes import stores as stores_routes
 
 seed()
 
@@ -63,14 +63,14 @@ def create_app(init_db=True) -> FastAPI:
 
     app.add_api_route("/", home_page, response_class=HTMLResponse)
 
-    app.include_router(auth)
-    app.include_router(items)
-    app.include_router(stores)
+    app.include_router(auth_routes)
+    app.include_router(items_routes)
+    app.include_router(stores_routes)
 
-    app.include_router(auth_api)
-    app.include_router(items_api)
-    app.include_router(purchases_api)
-    app.include_router(receipts_api)
-    app.include_router(stores_api)
+    app.include_router(auth_api_routes)
+    app.include_router(items_api_routes)
+    app.include_router(purchases_api_routes)
+    app.include_router(receipts_api_routes)
+    app.include_router(stores_api_routes)
 
     return app
