@@ -59,10 +59,14 @@ class ReceiptRepository:
         receipts = await self.db_session.scalars(statement)
         return receipts.all()
 
-    async def get_by_id(self, id: int, with_store: bool = False) -> Receipt | None:
+    async def get_by_id(
+        self, id: int, with_store: bool = False, with_purchases: bool = False
+    ) -> Receipt | None:
         statement = select(Receipt).filter(Receipt.id == id).limit(1)
         if with_store:
             statement = statement.options(joinedload(Receipt.store))
+        if with_purchases:
+            statement = statement.options(joinedload(Receipt.purchases))
         receipt = await self.db_session.scalar(statement)
         return receipt
 

@@ -55,7 +55,7 @@ def upgrade() -> None:
         sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("item_id", sa.Integer(), nullable=False),
         sa.Column("receipt_id", sa.Integer(), nullable=False),
-        sa.Column("price", sa.Integer(), nullable=False),
+        sa.Column("price", sa.Integer(), nullable=True),
         sa.Column("notes", sa.Text(), nullable=True),
         sa.ForeignKeyConstraint(
             ["item_id"],

@@ -16,7 +16,11 @@ class PurchaseRepository:
         self.db_session = db_session
 
     async def create(
-        self, item_id: int, receipt_id: int, price: float, notes: str | None = None
+        self,
+        item_id: int,
+        receipt_id: int,
+        price: float | None = None,
+        notes: str | None = None,
     ) -> Purchase:
         purchase = Purchase(
             item_id=item_id, receipt_id=receipt_id, price=price, notes=notes

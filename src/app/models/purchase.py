@@ -16,5 +16,5 @@ class Purchase(Base):
     item_id: Mapped[int] = mapped_column(ForeignKey("items.id"))
     receipt_id: Mapped[int] = mapped_column(ForeignKey("receipts.id"))
     receipt: Mapped["Receipt"] = relationship(back_populates="purchases")
-    price: Mapped[int] = mapped_column(Integer())
+    price: Mapped[int] = mapped_column(Integer(), nullable=True)
     notes: Mapped[str | None] = mapped_column(Text(), nullable=True)
