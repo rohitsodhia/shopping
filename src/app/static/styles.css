@@ -3,6 +3,7 @@
 *::before,
 *::after {
     box-sizing: border-box;
+    position: relative;
 }
 * {
     margin: 0;
@@ -29,6 +30,7 @@ button,
 textarea,
 select {
     font: inherit;
+    border: none;
 }
 p,
 h1,
@@ -60,6 +62,7 @@ h6 {
     --background: #ffffff;
     --foreground: #171717;
     --foreground-faded: #17171744;
+    --foreground-adjust: 0.3;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -110,6 +113,16 @@ h1 {
     margin: 0.25em 0 0.5em;
 }
 
+input {
+    background-color: rgb(from var(--foreground) r g b / 0.5);
+    color: var(--background);
+    padding: 0.4em 0.5em 0.2em;
+    border-radius: 1em;
+    border: 2px solid #dd9922;
+    border-top: none;
+    border-right: none;
+}
+
 button {
     font-size: 1.2em;
     color: var(--foreground);
@@ -143,19 +156,34 @@ button {
         align-items: center;
         gap: 1em;
         padding: 0.5em 0;
-    }
 
-    span {
-        font-size: 1.3em;
+        & > :first-child {
+            font-size: 1.3em;
+        }
     }
 }
 
-.edit-form {
+label {
+    display: inline-block;
+}
+
+form {
+    & > div {
+        margin: 0.5em 0;
+    }
+}
+
+.multiline-form {
     & > div {
         display: flex;
         align-items: center;
         gap: 1em;
-        padding: 0.5em 0;
+        margin: 0.5em 0;
+    }
+
+    label {
+        width: 50px;
+        flex: 0 0 auto;
     }
 
     .textarea-wrapper {
@@ -166,5 +194,49 @@ button {
 
     textarea {
         width: 100%;
+    }
+}
+
+.combobox {
+    .combobox-input {
+        input {
+            z-index: 0;
+        }
+
+        ul {
+            z-index: 1;
+            position: absolute;
+            top: 2.8em;
+            left: 0.5em;
+            width: calc(100% - 1em);
+            border-radius: 0.5em;
+            background-color: oklab(
+                from var(--background) calc(l + var(--foreground-adjust)) a b
+            );
+            overflow: hidden;
+        }
+
+        li {
+            width: 100%;
+            padding: 0.3em 0.5em;
+            cursor: pointer;
+
+            &:hover {
+                background-color: oklab(
+                    from var(--background)
+                        calc(l + (var(--foreground-adjust) * 1.3)) a b
+                );
+            }
+        }
+    }
+}
+
+#add-purchase {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+
+    .combobox {
+        display: inline-block;
     }
 }

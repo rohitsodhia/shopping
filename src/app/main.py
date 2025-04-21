@@ -16,6 +16,7 @@ from app.auth.routes import auth as auth_routes
 from app.configs import configs, templates
 from app.database import get_db_session, session_manager
 from app.items.routes import items as items_routes
+from app.receipts.routes import receipts as receipts_routes
 from app.stores.routes import stores as stores_routes
 
 seed()
@@ -65,6 +66,7 @@ def create_app(init_db=True) -> FastAPI:
 
     app.include_router(auth_routes)
     app.include_router(items_routes)
+    app.include_router(receipts_routes)
     app.include_router(stores_routes)
 
     app.include_router(auth_api_routes)

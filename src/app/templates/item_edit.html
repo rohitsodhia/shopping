@@ -2,7 +2,7 @@
 {% block title %}Edit Item{% endblock %}
 {% block content %}
     <h1>{{ item.name }}</h1>
-    <form action="/items/{{ item.id }}" method="post" class="edit-form">
+    <form action="/items/{{ item.id }}" method="post" class="multiline-form">
         {% if duplicate %}
         <p class="error">Item already exists</p>
         {% endif %}

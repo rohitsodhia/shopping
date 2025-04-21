@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Receipts{% endblock %}
+{% block content %}
+    <h1>Receipts</h1>
+    <form id="new-receipt-form" action="/receipts" method="post" class="multiline-form">
+        <div>
+            <label for="date">Date:</label>
+            <input type="date" id="date" name="date" class="datepicker-current">
+        </div>
+        <div>
+            <label for="store">Store:</label>
+            <select id="store" name="store_id">
+                {% for store in stores %}
+                <option value="{{ store.id }}">{{ store.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div><button type="submit">Submit</button></div>
+    </form>
+
+    <div class="list-rows">
+        <ul>
+            {% for receipt in receipts %}
+            <li>
+                <a href="/receipts/{{ receipt.id }}">{{ receipt.store.name }} - {{ receipt.date.isoformat() }}</a>
+                <a href="/receipts/{{ receipt.id }}/edit"><img src="{{ url_for('static', path='/images/edit.svg') }}"></a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}

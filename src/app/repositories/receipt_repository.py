@@ -5,6 +5,7 @@ from typing import Sequence
 
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import joinedload
 
 from app.configs import configs
 from app.exceptions import NotFound
@@ -43,6 +44,7 @@ class ReceiptRepository:
             select(Receipt)
             .limit(configs.PAGINATE_PER_PAGE)
             .offset((page - 1) * configs.PAGINATE_PER_PAGE)
+            .order_by(Receipt.date.desc())
         )
         if type(store_ids) == list and len(store_ids) > 1:
             store_ids = [int(x) for x in store_ids]
@@ -57,10 +59,11 @@ class ReceiptRepository:
         receipts = await self.db_session.scalars(statement)
         return receipts.all()
 
-    async def get_by_id(self, id: int) -> Receipt | None:
-        receipt = await self.db_session.scalar(
-            select(Receipt).filter(Receipt.id == id).limit(1)
-        )
+    async def get_by_id(self, id: int, with_store: bool = False) -> Receipt | None:
+        statement = select(Receipt).filter(Receipt.id == id).limit(1)
+        if with_store:
+            statement = statement.options(joinedload(Receipt.store))
+        receipt = await self.db_session.scalar(statement)
         return receipt
 
     async def update(

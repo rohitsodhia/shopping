@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Receipt{% endblock %}
+{% block content %}
+    <h1>{{ receipt.store.name }} - {{ receipt.date.isoformat() }}</h1>
+    <div x-data="itemList">
+        <form id="add-purchase" action="/receipts/{{ receipt.id }}/purchase" method="post">
+            <div class="combobox">
+                <div class="combobox-input">
+                    <input type="name" name="name" autocomplete="off" x-model="name" @keyup.prevent.debounce.350ms="updateItems(name)">
+                    <ul>
+                        <template x-for="item in items">
+                            <li @click="selectItem(item)">
+                                <span x-text="item.name"></span>
+                            </li>
+                        </template>
+                    </ul>
+                </div>
+            </div>
+            <button type="submit"><img src="{{ url_for('static', path='/images/add.svg') }}"></button>
+        </form>
+
+        <div class="list-rows">
+        </div>
+    </div>
+
+{% endblock %}
