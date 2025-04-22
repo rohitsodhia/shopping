@@ -14,5 +14,5 @@ class Item(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(), unique=True)
-    purchases: Mapped[list["Purchase"]] = relationship()
+    purchases: Mapped[list["Purchase"]] = relationship(back_populates="item")
     notes: Mapped[str] = mapped_column(Text(), nullable=True)

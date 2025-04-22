@@ -82,7 +82,6 @@ body {
 }
 
 ul {
-    display: flex;
     padding: 0;
 }
 
@@ -101,6 +100,10 @@ a {
 
 nav {
     border-bottom: 1px solid var(--foreground);
+
+    ul {
+        display: flex;
+    }
 
     a {
         display: block;

@@ -18,6 +18,19 @@ async function fetchItems(params) {
     return items.data;
 }
 
+async function addPurchase(receiptId, itemId) {
+    await fetch(`/api/purchases`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            item_id: itemId,
+            receipt_id: receiptId,
+        }),
+    });
+}
+
 document.addEventListener('alpine:init', () => {
     Alpine.data('itemList', () => {
         return {
@@ -28,8 +41,10 @@ document.addEventListener('alpine:init', () => {
                     this.items = (await fetchItems({ search: this.name })).items;
                 }
             },
-            selectItem(item) {
-                addPurchase(item.id);
+            async selectItem(item) {
+                const urlParts = window.location.href.split('/');
+                const receiptId = urlParts[urlParts.length - 1];
+                await addPurchase(receiptId, item.id);
                 this.name = '';
                 this.items = [];
             },

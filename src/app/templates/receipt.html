@@ -20,6 +20,13 @@
         </form>
 
         <div class="list-rows">
+            <ul>
+                {% for purchase in receipt.purchases %}
+                <li>
+                    <span>{{ purchase.item.name }}</span>
+                </li>
+                {% endfor %}
+            </ul>
         </div>
     </div>
 
