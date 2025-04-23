@@ -16,6 +16,8 @@ async def validate_jwt(request: Request):
                 algorithms=[configs.JWT_ALGORITHM],
             )
             request.scope["user"] = "valid"
+        except jwt.InvalidSignatureError:
+            pass
         except:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden"
