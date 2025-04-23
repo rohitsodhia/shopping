@@ -4,7 +4,9 @@ import pytest
 from sqlalchemy import insert
 
 from app.configs import configs
-from app.models import Receipt, Store
+from app.models import Item, Purchase, Receipt, Store
+
+from ..generators import receipt_generator
 
 pytestmark = pytest.mark.anyio
 
@@ -109,6 +111,30 @@ async def test_get_receipt_success(authed_client, db_session):
 async def test_get_receipt_not_found(authed_client):
     response = await authed_client.get(f"/api/receipts/1")
     assert response.status_code == 404
+
+
+async def test_get_purcahses_success(authed_client, db_session, receipt_generator):
+    receipt, store = await receipt_generator()
+    response = await authed_client.get(f"/api/receipts/{receipt.id}/purchases")
+    assert response.status_code == 200
+    assert len(response.json()["data"]["purchases"]) == 0
+
+    item = Item(name="test")
+    db_session.add(item)
+    await db_session.flush()
+    await db_session.execute(
+        insert(Purchase),
+        [
+            {"receipt_id": receipt.id, "item_id": item.id},
+            {"receipt_id": receipt.id, "item_id": item.id},
+            {"receipt_id": receipt.id, "item_id": item.id},
+            {"receipt_id": receipt.id, "item_id": item.id},
+        ],
+    )
+
+    response = await authed_client.get(f"/api/receipts/{receipt.id}/purchases")
+    assert response.status_code == 200
+    assert len(response.json()["data"]["purchases"]) == 4
 
 
 async def test_update_receipt_success(authed_client, db_session):

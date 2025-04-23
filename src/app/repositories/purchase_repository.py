@@ -5,6 +5,7 @@ from typing import NotRequired, Sequence, TypedDict
 from sqlalchemy import insert, select
 from sqlalchemy.exc import IntegrityError as SQLAIntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import joinedload
 
 from app.configs import configs
 from app.exceptions import AlreadyExists, NotFound
@@ -62,6 +63,15 @@ class PurchaseRepository:
         statement = select(Purchase).filter(Purchase.id == id).limit(1)
         purchase = await self.db_session.scalar(statement)
         return purchase
+
+    async def get_by_receipt_id(self, receipt_id: int) -> Sequence[Purchase] | None:
+        statement = (
+            select(Purchase)
+            .filter(Purchase.receipt_id == receipt_id)
+            .options(joinedload(Purchase.item))
+        )
+        purchases = await self.db_session.scalars(statement)
+        return purchases.all()
 
     async def update(self, id: int, price: int | None = None, notes: str | None = None):
         purchase = await self.get_by_id(id)

@@ -8,6 +8,7 @@ from app.exceptions import NotFound
 from app.helpers.functions import dict_from_schema
 from app.models import Receipt
 from app.repositories import ReceiptRepository
+from app.repositories.purchase_repository import PurchaseRepository
 
 receipts_api = APIRouter(prefix="/api/receipts")
 
@@ -27,7 +28,11 @@ async def add_receipt(
         notes=receipt_input.notes,
     )
 
-    return {"data": {"receipt": dict_from_schema(receipt, schemas.Receipt)}}
+    return {
+        "data": {
+            "receipt": dict_from_schema(receipt, schemas.Receipt),
+        }
+    }
 
 
 @receipts_api.get(
@@ -70,7 +75,23 @@ async def get_receipt(db_session: DBSessionDependency, receipt_id: int):
     return {
         "data": {
             "receipt": dict_from_schema(receipt, schemas.Receipt),
-        },
+        }
+    }
+
+
+@receipts_api.get(
+    "/{receipt_id}/purchases",
+    response_model=schemas.ListPurchasesResponse,
+)
+async def get_receipt_purchases(db_session: DBSessionDependency, receipt_id: int):
+    purchase_repository = PurchaseRepository(db_session)
+    purchases = await purchase_repository.get_by_receipt_id(receipt_id)
+    purchases_output = []
+    for purchase in purchases or []:
+        purchases_output.append(dict_from_schema(purchase, schemas.Purchase))
+
+    return {
+        "data": {"purchases": purchases_output},
     }
 
 
@@ -92,5 +113,5 @@ async def update_receipt(
     return {
         "data": {
             "receipt": dict_from_schema(receipt, schemas.Receipt),
-        },
+        }
     }
