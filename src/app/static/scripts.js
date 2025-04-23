@@ -36,17 +36,27 @@ document.addEventListener('alpine:init', () => {
         return {
             name: '',
             items: [],
+            purchases: [],
+            receiptId: null,
+            async init() {
+                const urlParts = window.location.href.split('/');
+                this.receiptId = urlParts[urlParts.length - 1];
+                this.refreshPurchases(this.receiptId)
+            },
             async updateItems($event) {
                 if (this.name && !this.items.find(item => item.name == this.name)) {
                     this.items = (await fetchItems({ search: this.name })).items;
                 }
             },
+            async refreshPurchases() {
+                const purchases = await fetch(`/api/receipts/${this.receiptId}/purchases`).then(response => response.json());
+                this.purchases = purchases.data.purchases;
+            },
             async selectItem(item) {
-                const urlParts = window.location.href.split('/');
-                const receiptId = urlParts[urlParts.length - 1];
-                await addPurchase(receiptId, item.id);
+                await addPurchase(this.receiptId, item.id);
                 this.name = '';
                 this.items = [];
+                await this.refreshPurchases()
             },
         };
     });

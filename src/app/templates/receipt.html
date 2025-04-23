@@ -21,11 +21,11 @@
 
         <div class="list-rows">
             <ul>
-                {% for purchase in receipt.purchases %}
-                <li>
-                    <span>{{ purchase.item.name }}</span>
-                </li>
-                {% endfor %}
+                <template x-for="purchase in purchases" :key="purchase.id">
+                    <li>
+                        <span x-text="purchase.item.name"></span>
+                    </li>
+                </template>
             </ul>
         </div>
     </div>

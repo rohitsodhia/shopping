@@ -80,9 +80,7 @@ async def view_receipt(
     receipt_id: int,
 ):
     receipt_repository = ReceiptRepository(db_session)
-    receipt = await receipt_repository.get_by_id(
-        receipt_id, with_store=True, with_purchases=True
-    )
+    receipt = await receipt_repository.get_by_id(receipt_id, with_store=True)
 
     return templates.TemplateResponse(
         request=request,
