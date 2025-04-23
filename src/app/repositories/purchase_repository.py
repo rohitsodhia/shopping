@@ -60,8 +60,8 @@ class PurchaseRepository:
 
     async def get_by_id(self, id: int) -> Purchase | None:
         statement = select(Purchase).filter(Purchase.id == id).limit(1)
-        item = await self.db_session.scalar(statement)
-        return item
+        purchase = await self.db_session.scalar(statement)
+        return purchase
 
     async def update(self, id: int, price: int | None = None, notes: str | None = None):
         purchase = await self.get_by_id(id)
