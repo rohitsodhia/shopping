@@ -9,6 +9,6 @@ async def authed_client(app):
     async with AsyncClient(
         transport=ASGITransport(app=app),
         base_url="http://test",
-        headers={"Authorization": f"Bearer {generate_token()}"},
+        cookies={"auth": generate_token()},
     ) as ac:
         yield ac
