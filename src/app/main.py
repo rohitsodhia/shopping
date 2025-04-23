@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+from pathlib import Path
 from random import seed
 
 from fastapi import Depends, FastAPI, Request
@@ -60,7 +61,11 @@ def create_app(init_db=True) -> FastAPI:
         allow_origins=["*"],
     )
 
-    app.mount("/static", StaticFiles(directory="static"), name="static")
+    app.mount(
+        "/static",
+        StaticFiles(directory=f"{Path(__file__).parent}/static"),
+        name="static",
+    )
 
     app.add_api_route("/", home_page, response_class=HTMLResponse)
 
