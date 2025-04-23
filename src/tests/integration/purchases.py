@@ -2,10 +2,8 @@ import datetime
 import random
 
 import pytest
-from sqlalchemy import insert
 
-from app.configs import configs
-from app.models import Item, Purchase, Receipt, Store
+from app.models import Item, Purchase
 
 from ..generators import receipt_generator
 
@@ -13,7 +11,7 @@ pytestmark = pytest.mark.anyio
 
 
 async def test_add_purchase_success(authed_client, db_session, receipt_generator):
-    receipt, store = await receipt_generator(datetime.date(2022, 1, 1))
+    receipt, store = await receipt_generator()
     item = Item(name="test")
     db_session.add(item)
     await db_session.flush()
@@ -30,7 +28,7 @@ async def test_add_purchase_success(authed_client, db_session, receipt_generator
 
 
 async def test_add_bulk_purchases_success(authed_client, db_session, receipt_generator):
-    receipt, store = await receipt_generator(datetime.date(2022, 1, 1))
+    receipt, store = await receipt_generator()
     item = Item(name="test")
     db_session.add(item)
     await db_session.flush()
@@ -56,7 +54,7 @@ async def test_add_bulk_purchases_success(authed_client, db_session, receipt_gen
 
 
 async def test_update_purchase_success(authed_client, db_session, receipt_generator):
-    receipt, store = await receipt_generator(datetime.date(2022, 1, 1))
+    receipt, store = await receipt_generator()
     item = Item(name="test")
     db_session.add(item)
     await db_session.flush()
