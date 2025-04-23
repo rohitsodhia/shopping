@@ -10,21 +10,27 @@ from ..generators import receipt_generator
 pytestmark = pytest.mark.anyio
 
 
-async def test_add_purchase_success(authed_client, db_session, receipt_generator):
+@pytest.mark.parametrize("price", (None, random.randint(1, 10)))
+async def test_add_purchase_success(
+    authed_client, db_session, receipt_generator, price
+):
     receipt, store = await receipt_generator()
     item = Item(name="test")
     db_session.add(item)
     await db_session.flush()
 
-    price = random.randint(1, 10)
+    json_body = {"item_id": item.id, "receipt_id": receipt.id}
+    if price:
+        json_body["price"] = price
     response = await authed_client.post(
         "/api/purchases",
-        json={"item_id": item.id, "receipt_id": receipt.id, "price": price},
+        json=json_body,
     )
     assert response.status_code == 200
-    assert response.json()["data"]["purchase"]["item_id"] == item.id
-    assert response.json()["data"]["purchase"]["receipt_id"] == receipt.id
-    assert response.json()["data"]["purchase"]["price"] == price
+    response_data = response.json()
+    assert response_data["data"]["purchase"]["item_id"] == item.id
+    assert response_data["data"]["purchase"]["receipt_id"] == receipt.id
+    assert response_data["data"]["purchase"]["price"] == price
 
 
 async def test_add_bulk_purchases_success(authed_client, db_session, receipt_generator):
