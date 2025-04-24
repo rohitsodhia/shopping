@@ -1,6 +1,14 @@
 from typing import Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
+
+
+class EmptyData(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+
+class SuccessResponse(BaseModel):
+    data: EmptyData
 
 
 class AlreadyExistsResponseContent(BaseModel):

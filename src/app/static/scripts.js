@@ -58,6 +58,12 @@ document.addEventListener('alpine:init', () => {
                 this.items = [];
                 await this.refreshPurchases()
             },
+            async removePurchase(purchaseId) {
+                await fetch(`/api/purchases/${purchaseId}`, {
+                    method: 'DELETE',
+                });
+                await this.refreshPurchases();
+            }
         };
     });
 });

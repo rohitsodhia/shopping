@@ -4,6 +4,7 @@ from app.api.purchases import schemas
 from app.database import DBSessionDependency
 from app.helpers.functions import dict_from_schema
 from app.repositories import PurchaseRepository
+from app.schemas import SuccessResponse
 
 purchases_api = APIRouter(prefix="/api/purchases")
 
@@ -72,4 +73,18 @@ async def update_purchase(
         "data": {
             "purchase": dict_from_schema(purchase, schemas.Purchase),
         },
+    }
+
+
+@purchases_api.delete(
+    "/{purchase_id}",
+    response_model=SuccessResponse,
+)
+async def delete_purchase(purchase_id: int, db_session: DBSessionDependency):
+    purchase_repository = PurchaseRepository(db_session)
+
+    await purchase_repository.delete(purchase_id)
+
+    return {
+        "data": {},
     }

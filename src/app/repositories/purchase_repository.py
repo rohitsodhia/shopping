@@ -73,7 +73,9 @@ class PurchaseRepository:
         purchases = await self.db_session.scalars(statement)
         return purchases.all()
 
-    async def update(self, id: int, price: int | None = None, notes: str | None = None):
+    async def update(
+        self, id: int, price: int | None = None, notes: str | None = None
+    ) -> Purchase:
         purchase = await self.get_by_id(id)
         if not purchase:
             raise NotFound(Purchase)
@@ -85,3 +87,11 @@ class PurchaseRepository:
 
         await self.db_session.commit()
         return purchase
+
+    async def delete(self, id: int) -> None:
+        purchase = await self.get_by_id(id)
+        if not purchase:
+            raise NotFound(Purchase)
+
+        await self.db_session.delete(purchase)
+        await self.db_session.commit()
