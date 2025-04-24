@@ -58,6 +58,19 @@ document.addEventListener('alpine:init', () => {
                 this.items = [];
                 await this.refreshPurchases()
             },
+            async updatePurchase(purchase) {
+                await fetch(`/api/purchases/${purchase.id}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        price: purchase.price,
+                        notes: purchase.notes,
+                    }),
+                });
+                // await this.refreshPurchases();
+            },
             async removePurchase(purchaseId) {
                 await fetch(`/api/purchases/${purchaseId}`, {
                     method: 'DELETE',
