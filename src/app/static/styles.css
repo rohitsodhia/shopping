@@ -116,7 +116,8 @@ h1 {
     margin: 0.25em 0 0.5em;
 }
 
-input {
+input,
+textarea {
     background-color: rgb(from var(--foreground) r g b / 0.5);
     color: var(--background);
     padding: 0.4em 0.5em 0.2em;
@@ -124,6 +125,13 @@ input {
     border: 2px solid #dd9922;
     border-top: none;
     border-right: none;
+
+    &::placeholder {
+        color: oklab(
+            from var(--background) calc(l + var(--foreground-adjust) * 0.5) a b
+        );
+        font-style: italic;
+    }
 }
 
 input::-webkit-outer-spin-button,
@@ -263,6 +271,10 @@ form {
 }
 
 #purchase-list {
+    li {
+        display: block;
+    }
+
     .main-row {
         width: 100%;
         display: flex;
@@ -278,5 +290,10 @@ form {
             width: 80px;
             flex-basis: auto;
         }
+    }
+
+    .purchase-notes {
+        width: 100%;
+        margin-top: 0.5em;
     }
 }
