@@ -126,6 +126,16 @@ input {
     border-right: none;
 }
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
 button {
     font-size: 1.2em;
     color: var(--foreground);
@@ -136,6 +146,14 @@ button {
 
     &:hover {
         background: #008800;
+    }
+
+    &.close-button {
+        border-color: #cc0000;
+
+        &:hover {
+            background: #660000;
+        }
     }
 }
 
@@ -241,5 +259,24 @@ form {
 
     .combobox {
         display: inline-block;
+    }
+}
+
+#purchase-list {
+    .main-row {
+        width: 100%;
+        display: flex;
+        gap: 0.5em;
+
+        .purchase-name {
+            flex-grow: 1;
+            align-self: center;
+        }
+
+        .purchase-price {
+            text-align: right;
+            width: 80px;
+            flex-basis: auto;
+        }
     }
 }

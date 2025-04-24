@@ -19,11 +19,15 @@
             <button type="submit"><img src="{{ url_for('static', path='/images/add.svg') }}"></button>
         </form>
 
-        <div class="list-rows">
+        <div id="purchase-list" class="list-rows">
             <ul>
                 <template x-for="purchase in purchases" :key="purchase.id">
                     <li>
-                        <span x-text="purchase.item.name"></span>
+                        <div class="main-row">
+                            <span x-text="purchase.item.name" class="purchase-name"></span>
+                            <input type="number" step="0.01" x-model="purchase.price" class="purchase-price">
+                            <button type="button" class="close-button"><img src="{{ url_for('static', path='/images/close.svg') }}"></button>
+                        </div>
                     </li>
                 </template>
             </ul>
