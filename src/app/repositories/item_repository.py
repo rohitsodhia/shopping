@@ -50,8 +50,10 @@ class ItemRepository:
         items = await self.db_session.scalars(statement)
         return items.all()
 
-    async def get_by_id(self, id: int) -> Item | None:
-        item = await self.db_session.scalar(select(Item).filter(Item.id == id).limit(1))
+    async def get_by_id(self, item_id: int) -> Item | None:
+        item = await self.db_session.scalar(
+            select(Item).filter(Item.id == item_id).limit(1)
+        )
         return item
 
     async def update(self, id: int, name: str | None = None, notes: str | None = None):
