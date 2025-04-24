@@ -6,8 +6,13 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 
 from app.configs import templates
 from app.database import DBSessionDependency
-from app.exceptions import AlreadyExists
-from app.repositories import ReceiptRepository, StoreRepository
+from app.models import purchase
+from app.repositories import (
+    ItemRepository,
+    PurchaseRepository,
+    ReceiptRepository,
+    StoreRepository,
+)
 
 receipts = APIRouter(prefix="/receipts")
 
@@ -87,3 +92,20 @@ async def view_receipt(
         name="receipt.html",
         context={"receipt": receipt},
     )
+
+
+@receipts.post("/{receipt_id}/purchase", response_class=HTMLResponse)
+async def add_purchase(
+    request: Request,
+    db_session: DBSessionDependency,
+    receipt_id: int,
+    name: Annotated[str, Form()],
+):
+    item_repository = ItemRepository(db_session)
+    item = await item_repository.get_by_name(name=name)
+    if not item:
+        item = await item_repository.create(name=name)
+    purchase_repository = PurchaseRepository(db_session)
+    await purchase_repository.create(item_id=item.id, receipt_id=receipt_id)
+
+    return RedirectResponse(url=f"/receipts/{receipt_id}", status_code=302)

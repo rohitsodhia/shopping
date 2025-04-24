@@ -56,6 +56,12 @@ class ItemRepository:
         )
         return item
 
+    async def get_by_name(self, name: str) -> Item | None:
+        item = await self.db_session.scalar(
+            select(Item).filter(Item.name == name).limit(1)
+        )
+        return item
+
     async def update(self, id: int, name: str | None = None, notes: str | None = None):
         item = await self.get_by_id(id)
         if not item:
