@@ -50,7 +50,9 @@ document.addEventListener('alpine:init', () => {
             },
             async refreshPurchases() {
                 const purchases = await fetch(`/api/receipts/${this.receiptId}/purchases`).then(response => response.json());
-                this.purchases = purchases.data.purchases;
+                this.purchases = purchases.data.purchases.map(purchase => ({
+                    ...purchase, price: purchase.price / 100
+                }));
             },
             async selectItem(item) {
                 await addPurchase(this.receiptId, item.id);
@@ -65,7 +67,7 @@ document.addEventListener('alpine:init', () => {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        price: purchase.price,
+                        price: purchase.price * 100,
                         notes: purchase.notes,
                     }),
                 });
