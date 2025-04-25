@@ -273,6 +273,13 @@ form {
 #purchase-list {
     li {
         display: block;
+        padding: 1em 0;
+        border-bottom: 1px solid
+            oklab(from var(--foreground) calc(l - var(--foreground-adjust)) a b);
+
+        &:last-of-type {
+            border-bottom: none;
+        }
     }
 
     .main-row {
