@@ -39,7 +39,7 @@ async def process_new_item(
 
 
 @items.get("/{item_id}", response_class=HTMLResponse)
-async def edit_item(
+async def view_item(
     request: Request, db_session: DBSessionDependency, item_id: int, duplicate: int = 0
 ):
     item_repository = ItemRepository(db_session)
@@ -47,7 +47,7 @@ async def edit_item(
 
     return templates.TemplateResponse(
         request=request,
-        name="item_edit.html",
+        name="item.html",
         context={"item": item, "duplicate": duplicate},
     )
 
@@ -66,4 +66,4 @@ async def process_edit_item(
     except AlreadyExists:
         return RedirectResponse(url=f"/items/{item_id}?duplicate=1", status_code=302)
 
-    return RedirectResponse(url="/items", status_code=302)
+    return RedirectResponse(url=f"/items/{item_id}", status_code=302)

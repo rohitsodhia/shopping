@@ -81,4 +81,16 @@ document.addEventListener('alpine:init', () => {
             }
         };
     });
+
+    Alpine.data('itemView', () => {
+        return {
+            showForm: false,
+            init() {
+                let params = new URLSearchParams(document.location.search);
+                if (params.has('duplicate')) {
+                    this.showForm = true;
+                }
+            }
+        };
+    });
 });

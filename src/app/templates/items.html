@@ -15,8 +15,7 @@
         <ul>
             {% for item in items %}
             <li>
-                <span>{{ item.name }}</span>
-                <a href="/items/{{ item.id }}"><img src="{{ url_for('static', path='/images/edit.svg') }}"></a>
+                <a href="/items/{{ item.id }}">{{ item.name }}</a>
             </li>
             {% endfor %}
         </ul>

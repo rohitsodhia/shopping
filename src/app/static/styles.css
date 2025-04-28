@@ -81,6 +81,13 @@ body {
     padding: 0.5em;
 }
 
+.hidden {
+    display: none;
+}
+
+[x-cloak] {
+    display: none !important;
+}
 ul {
     padding: 0;
 }
@@ -146,21 +153,25 @@ input[type="number"] {
 }
 button {
     font-size: 1.2em;
-    color: var(--foreground);
-    background: var(--foreground-faded);
-    border-radius: 0.5em;
-    border: 1px solid var(--foreground);
     cursor: pointer;
+    background: none;
 
-    &:hover {
-        background: #008800;
-    }
-
-    &.close-button {
-        border-color: #cc0000;
+    &:not(.no-style) {
+        color: var(--foreground);
+        background: var(--foreground-faded);
+        border-radius: 0.5em;
+        border: 1px solid var(--foreground);
 
         &:hover {
-            background: #660000;
+            background: #008800;
+        }
+
+        &.close-button {
+            border-color: #cc0000;
+
+            &:hover {
+                background: #660000;
+            }
         }
     }
 }
@@ -258,6 +269,11 @@ form {
             }
         }
     }
+}
+
+.align-children {
+    display: flex;
+    align-items: center;
 }
 
 #add-purchase {
