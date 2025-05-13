@@ -51,7 +51,7 @@ document.addEventListener('alpine:init', () => {
             async refreshPurchases() {
                 const purchases = await fetch(`/api/receipts/${this.receiptId}/purchases`).then(response => response.json());
                 this.purchases = purchases.data.purchases.map(purchase => ({
-                    ...purchase, price: purchase.price / 100
+                    ...purchase, price: (purchase.price / 100).toFixed(2)
                 }));
             },
             async selectItem(item) {
