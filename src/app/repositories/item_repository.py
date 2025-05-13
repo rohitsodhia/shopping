@@ -5,10 +5,11 @@ from typing import Sequence
 from sqlalchemy import func, select
 from sqlalchemy.exc import IntegrityError as SQLAIntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import joinedload
 
 from app.configs import configs
 from app.exceptions import AlreadyExists, NotFound
-from app.models import Item
+from app.models import Item, Purchase, Receipt
 
 
 class ItemRepository:
@@ -50,10 +51,17 @@ class ItemRepository:
         items = await self.db_session.scalars(statement)
         return items.all()
 
-    async def get_by_id(self, item_id: int) -> Item | None:
-        item = await self.db_session.scalar(
-            select(Item).filter(Item.id == item_id).limit(1)
-        )
+    async def get_by_id(
+        self, item_id: int, include_purchases: bool = False
+    ) -> Item | None:
+        statement = select(Item).filter(Item.id == item_id).limit(1)
+        if include_purchases:
+            statement = statement.options(
+                joinedload(Item.purchases)
+                .joinedload(Purchase.receipt)
+                .joinedload(Receipt.store)
+            )
+        item = await self.db_session.scalar(statement)
         return item
 
     async def get_by_name(self, name: str) -> Item | None:

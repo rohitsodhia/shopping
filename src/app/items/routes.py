@@ -43,7 +43,7 @@ async def view_item(
     request: Request, db_session: DBSessionDependency, item_id: int, duplicate: int = 0
 ):
     item_repository = ItemRepository(db_session)
-    item = await item_repository.get_by_id(item_id)
+    item = await item_repository.get_by_id(item_id, include_purchases=True)
 
     return templates.TemplateResponse(
         request=request,

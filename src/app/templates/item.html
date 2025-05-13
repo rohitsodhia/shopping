@@ -2,25 +2,44 @@
 {% block title %}{{ item.name }}{% endblock %}
 {% block content %}
     <div x-data="itemView">
-        <div x-cloak x-show="!showForm">
-            <h1 class="align-children"><span>{{ item.name }}</span> <button type="button" class="no-style"><img src="{{ url_for('static', path='/images/edit.svg') }}" @click="showForm = true"></button></h1>
-            {% if item.notes %}<p class="notes">{{ item.notes }}</p>{% endif %}
+        <div id="item-info">
+            <div x-cloak x-show="!showForm">
+                <h1 class="align-children"><span>{{ item.name }}</span> <button type="button" class="no-style"><img src="{{ url_for('static', path='/images/edit.svg') }}" @click="showForm = true"></button></h1>
+                {% if item.notes %}<p class="notes">{{ item.notes }}</p>{% endif %}
+            </div>
+            <form action="/items/{{ item.id }}" method="post" class="multiline-form" x-cloak x-show="showForm">
+                {% if duplicate %}
+                <p class="error">Item already exists</p>
+                {% endif %}
+                <div>
+                    <label for="name">Name:</label>
+                    <input type="name" id="name" name="name" value="{{ item.name }}">
+                </div>
+                <div class="textarea-wrapper">
+                    <label for="notes">Notes:</label>
+                    <textarea id="notes" name="notes">{{ item.notes or "" }}</textarea>
+                </div>
+                <div>
+                    <button type="submit">Update</button> <button type="button"><img src="{{ url_for('static', path='/images/close.svg') }}" @click="showForm = false"></button>
+                </div>
+            </form>
         </div>
-        <form action="/items/{{ item.id }}" method="post" class="multiline-form" x-cloak x-show="showForm">
-            {% if duplicate %}
-            <p class="error">Item already exists</p>
-            {% endif %}
-            <div>
-                <label for="name">Name:</label>
-                <input type="name" id="name" name="name" value="{{ item.name }}">
-            </div>
-            <div class="textarea-wrapper">
-                <label for="notes">Notes:</label>
-                <textarea id="notes" name="notes">{{ item.notes or "" }}</textarea>
-            </div>
-            <div>
-                <button type="submit">Update</button> <button type="button"><img src="{{ url_for('static', path='/images/close.svg') }}" @click="showForm = false"></button>
-            </div>
-        </form>
+        <hr>
+        <div id="item-purchase-list">
+            <ul>
+                {% for purchase in item.purchases %}
+                <li>
+                    <div class="main-row">
+                        <div class="purchase-info">
+                            <div class="purchase-store">{{ purchase.receipt.store.name }}</div>
+                            <div>{{ purchase.receipt.date.strftime('%b %-d, %Y') }}</div>
+                        </div>
+                        <div class="purchase-price">$ {{ "{:.2f}".format((purchase.price / 100)) }}</div>
+                    </div>
+                    {% if purchase.notes %}<div class="purchase-notes">{{ purchase.notes }}</div>{% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
     </div>
 {% endblock %}

@@ -320,3 +320,42 @@ form {
         margin-top: 0.5em;
     }
 }
+
+#item-purchase-list {
+    margin-top: 1em;
+
+    li {
+        padding-bottom: 0.5em;
+        margin-bottom: 0.5em;
+        border-bottom: 1px solid
+            oklab(from var(--background) calc(l + var(--foreground-adjust)) a b);
+
+        &:last-child {
+            padding-bottom: none;
+            margin-bottom: none;
+            border-bottom: none;
+        }
+    }
+
+    .main-row {
+        display: flex;
+        align-items: center;
+    }
+
+    .purchase-info {
+        flex-grow: 1;
+
+        & > :first-child {
+            font-size: 1.3em;
+        }
+    }
+
+    .purchase-price {
+        width: 100px;
+        flex: 0 0 auto;
+    }
+
+    .purchase-notes {
+        margin-top: 0.5em;
+    }
+}
