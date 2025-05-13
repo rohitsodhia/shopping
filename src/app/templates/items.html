@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Items{% endblock %}
+{% block content %}
+    <h1>Items</h1>
+    <form action="/items" method="post">
+        {% if duplicate %}
+        <p class="error">Store already exists</p>
+        {% endif %}
+        <label for="name">Name:</label>
+        <input type="name" id="name" name="name">
+        <button type="submit">Submit</button>
+    </form>
+
+    <div class="list-rows">
+        <ul>
+            {% for item in items %}
+            <li>
+                <a href="/items/{{ item.id }}">{{ item.name }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Edit Receipt{% endblock %}
+{% block content %}
+    <h1>Edit Receipt</h1>
+    <form id="update-receipt-form" action="/receipts/{{ receipt.id }}/edit" method="post" class="multiline-form">
+        <div>
+            <label for="date">Date:</label>
+            <input type="date" id="date" name="date" class="datepicker-current" value="{{ receipt.date.isoformat() }}">
+        </div>
+        <div>
+            <label for="store">Store:</label>
+            <select id="store" name="store_id">
+                {% for store in stores %}
+                <option value="{{ store.id }}"{{ store.id == receipt.store_id and " selected"}}>{{ store.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="textarea-wrapper">
+            <label for="notes">Notes:</label>
+            <textarea id="notes" name="notes">{{ receipt.notes or "" }}</textarea>
+        </div>
+        <div><button type="submit">Update</button></div>
+    </form>
+{% endblock %}

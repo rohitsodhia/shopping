@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Edit Store{% endblock %}
+{% block content %}
+    <h1>{{ store.name }}</h1>
+    <form action="/stores/{{ store.id }}" method="post">
+        {% if duplicate %}
+        <p class="error">Store already exists</p>
+        {% endif %}
+        <label for="name">Name:</label>
+        <input type="name" id="name" name="name" value="{{ store.name }}">
+        <button type="submit">Update</button>
+    </form>
+{% endblock %}

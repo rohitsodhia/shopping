@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Receipt{% endblock %}
+{% block content %}
+    <h1>{{ receipt.store.name }} - {{ receipt.date.isoformat() }}</h1>
+    <div x-data="itemList">
+        <form id="add-purchase" action="/receipts/{{ receipt.id }}/purchase" method="post">
+            <div class="combobox">
+                <div class="combobox-input">
+                    <input type="name" name="name" autocomplete="off" x-model="name" @keyup.prevent.debounce.350ms="updateItems(name)">
+                    <ul>
+                        <template x-for="item in items">
+                            <li @click="selectItem(item)">
+                                <span x-text="item.name"></span>
+                            </li>
+                        </template>
+                    </ul>
+                </div>
+            </div>
+            <button type="submit"><img src="{{ url_for('static', path='/images/add.svg') }}"></button>
+        </form>
+
+        <div id="purchase-list" class="list-rows">
+            <ul>
+                <template x-for="purchase in purchases" :key="purchase.id">
+                    <li>
+                        <div class="main-row">
+                            <span x-text="purchase.item.name" class="purchase-name"></span>
+                            <span>$ <input type="number" step="0.01" min="0" x-model="purchase.price" class="purchase-price" @keyup.prevent.debounce.350ms="updatePurchase(purchase)"></span>
+                            <button type="button" class="close-button" @click.prevent="removePurchase(purchase.id)"><img src="{{ url_for('static', path='/images/close.svg') }}"></button>
+                        </div>
+                        <input type="text" x-model="purchase.notes" @keyup.prevent.debounce.350ms="updatePurchase(purchase)" class="purchase-notes" placeholder="Notes">
+                    </li>
+                </template>
+            </ul>
+        </div>
+    </div>
+
+{% endblock %}

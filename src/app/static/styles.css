@@ -1,0 +1,361 @@
+/* Reset CSS */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    position: relative;
+}
+* {
+    margin: 0;
+}
+@media (prefers-reduced-motion: no-preference) {
+    html {
+        interpolate-size: allow-keywords;
+    }
+}
+body {
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+img,
+picture,
+video,
+canvas,
+svg {
+    display: block;
+    max-width: 100%;
+}
+input,
+button,
+textarea,
+select {
+    font: inherit;
+    border: none;
+}
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    overflow-wrap: break-word;
+}
+p {
+    text-wrap: pretty;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    text-wrap: balance;
+}
+#root,
+#__next {
+    isolation: isolate;
+}
+
+/* My CSS */
+:root {
+    --background: #ffffff;
+    --foreground: #171717;
+    --foreground-faded: #17171744;
+    --foreground-adjust: 0.3;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background: #0a0a0a;
+        --foreground: #ededed;
+        --foreground-faded: #ededed44;
+    }
+}
+
+body {
+    color: var(--foreground);
+    background: var(--background);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    padding: 0.5em;
+}
+
+.hidden {
+    display: none;
+}
+
+[x-cloak] {
+    display: none !important;
+}
+ul {
+    padding: 0;
+}
+
+li {
+    list-style: none;
+}
+
+a {
+    color: var(--foreground);
+    text-decoration: none;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+nav {
+    border-bottom: 1px solid var(--foreground);
+
+    ul {
+        display: flex;
+    }
+
+    a {
+        display: block;
+        padding: 0.5em;
+    }
+}
+
+h1 {
+    font-size: 1.75em;
+    margin: 0.25em 0 0.5em;
+}
+
+input,
+textarea {
+    background-color: rgb(from var(--foreground) r g b / 0.5);
+    color: var(--background);
+    padding: 0.4em 0.5em 0.2em;
+    border-radius: 1em;
+    border: 2px solid #dd9922;
+    border-top: none;
+    border-right: none;
+
+    &::placeholder {
+        color: oklab(
+            from var(--background) calc(l + var(--foreground-adjust) * 0.5) a b
+        );
+        font-style: italic;
+    }
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+button {
+    font-size: 1.2em;
+    cursor: pointer;
+    background: none;
+
+    &:not(.no-style) {
+        color: var(--foreground);
+        background: var(--foreground-faded);
+        border-radius: 0.5em;
+        border: 1px solid var(--foreground);
+
+        &:hover {
+            background: #008800;
+        }
+
+        &.close-button {
+            border-color: #cc0000;
+
+            &:hover {
+                background: #660000;
+            }
+        }
+    }
+}
+
+.error {
+    color: #cc0000;
+    text-align: center;
+    margin: 1em 0;
+    padding: 0.6em;
+    border: 1px solid #cc0000;
+}
+
+.list-rows {
+    margin-top: 1em;
+
+    ul {
+        display: block;
+    }
+
+    li {
+        display: flex;
+        align-items: center;
+        gap: 1em;
+        padding: 0.5em 0;
+
+        & > :first-child {
+            font-size: 1.3em;
+        }
+    }
+}
+
+label {
+    display: inline-block;
+}
+
+form {
+    & > div {
+        margin: 0.5em 0;
+    }
+}
+
+.multiline-form {
+    & > div {
+        display: flex;
+        align-items: center;
+        gap: 1em;
+        margin: 0.5em 0;
+    }
+
+    label {
+        width: 50px;
+        flex: 0 0 auto;
+    }
+
+    .textarea-wrapper {
+        label {
+            align-self: flex-start;
+        }
+    }
+
+    textarea {
+        width: 100%;
+    }
+}
+
+.combobox {
+    .combobox-input {
+        input {
+            z-index: 0;
+        }
+
+        ul {
+            z-index: 1;
+            position: absolute;
+            top: 2.8em;
+            left: 0.5em;
+            width: calc(100% - 1em);
+            border-radius: 0.5em;
+            background-color: oklab(
+                from var(--background) calc(l + var(--foreground-adjust)) a b
+            );
+            overflow: hidden;
+        }
+
+        li {
+            width: 100%;
+            padding: 0.3em 0.5em;
+            cursor: pointer;
+
+            &:hover {
+                background-color: oklab(
+                    from var(--background)
+                        calc(l + (var(--foreground-adjust) * 1.3)) a b
+                );
+            }
+        }
+    }
+}
+
+.align-children {
+    display: flex;
+    align-items: center;
+}
+
+#add-purchase {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+
+    .combobox {
+        display: inline-block;
+    }
+}
+
+#purchase-list {
+    li {
+        display: block;
+        padding: 1em 0;
+        border-bottom: 1px solid
+            oklab(from var(--foreground) calc(l - var(--foreground-adjust)) a b);
+
+        &:last-of-type {
+            border-bottom: none;
+        }
+    }
+
+    .main-row {
+        width: 100%;
+        display: flex;
+        gap: 0.5em;
+
+        .purchase-name {
+            flex-grow: 1;
+            align-self: center;
+        }
+
+        .purchase-price {
+            text-align: right;
+            width: 80px;
+            flex-basis: auto;
+        }
+    }
+
+    .purchase-notes {
+        width: 100%;
+        margin-top: 0.5em;
+    }
+}
+
+#item-purchase-list {
+    margin-top: 1em;
+
+    li {
+        padding-bottom: 0.5em;
+        margin-bottom: 0.5em;
+        border-bottom: 1px solid
+            oklab(from var(--background) calc(l + var(--foreground-adjust)) a b);
+
+        &:last-child {
+            padding-bottom: none;
+            margin-bottom: none;
+            border-bottom: none;
+        }
+    }
+
+    .main-row {
+        display: flex;
+        align-items: center;
+    }
+
+    .purchase-info {
+        flex-grow: 1;
+
+        & > :first-child {
+            font-size: 1.3em;
+        }
+    }
+
+    .purchase-price {
+        width: 100px;
+        flex: 0 0 auto;
+    }
+
+    .purchase-notes {
+        margin-top: 0.5em;
+    }
+}

@@ -3,10 +3,10 @@ services:
         ports:
             - 80:80
 
-    api:
+    python:
         command: uv run uvicorn --factory main:create_app --host 0.0.0.0 --reload --timeout-keep-alive 600
         volumes:
-            - ./api/src:/app/src
+            - ./src:/app/src
         stdin_open: true
         tty: true
 
@@ -17,7 +17,3 @@ services:
             - POSTGRES_PASSWORD=test123
         volumes:
             - ./docker/postgresql:/docker-entrypoint-initdb.d
-
-    frontend:
-        build:
-            target: dev
