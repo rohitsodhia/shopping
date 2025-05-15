@@ -52,3 +52,7 @@ extend-exclude = [
 "**/__init__.py" = [
     "F401",
 ]
+
+"**/tests/**" = [
+    "F811",
+]
