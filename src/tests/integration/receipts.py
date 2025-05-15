@@ -6,6 +6,8 @@ from sqlalchemy import insert
 from app.configs import configs
 from app.models import Item, Purchase, Receipt, Store
 
+from ..generators import receipt_generator  # noqa: F401  # Test fixture
+
 pytestmark = pytest.mark.anyio
 
 
