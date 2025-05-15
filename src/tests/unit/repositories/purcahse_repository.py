@@ -84,7 +84,7 @@ class TestPurchaseRepository:
         await db_session.commit()
 
         purchase_repository = PurchaseRepository(db_session)
-        purchases_inserted = await db_session.scalars(
+        await db_session.scalars(
             insert(Purchase).returning(Purchase),
             [
                 {"item_id": item.id, "receipt_id": receipt.id, "price": 1},

@@ -24,8 +24,8 @@ class TestStoreRepository:
     async def test_create_exception_same_name(self, db_session: AsyncSession):
         store_repository = StoreRepository(db_session)
         name = "test"
-        store = await store_repository.create(name=name)
-        with pytest.raises(AlreadyExists) as e:
+        await store_repository.create(name=name)
+        with pytest.raises(AlreadyExists):
             await store_repository.create(name=name)
 
     async def test_count(self, db_session: AsyncSession):
@@ -38,7 +38,7 @@ class TestStoreRepository:
 
     async def test_get_all(self, db_session: AsyncSession):
         store_repository = StoreRepository(db_session)
-        stores_inserted = await db_session.scalars(
+        await db_session.scalars(
             insert(Store).returning(Store),
             [{"name": "test1"}, {"name": "test2"}, {"name": "test3"}],
         )
@@ -76,5 +76,5 @@ class TestStoreRepository:
 
     async def test_update_no_store(self, db_session: AsyncSession):
         store_repository = StoreRepository(db_session)
-        with pytest.raises(NotFound) as e:
+        with pytest.raises(NotFound):
             await store_repository.update(id=1, name="test")

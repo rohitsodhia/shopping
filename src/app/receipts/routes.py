@@ -6,7 +6,6 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 
 from app.configs import templates
 from app.database import DBSessionDependency
-from app.models import purchase
 from app.repositories import (
     ItemRepository,
     PurchaseRepository,

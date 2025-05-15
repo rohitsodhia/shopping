@@ -2,12 +2,11 @@ import datetime
 
 import pytest
 
-from app.models import Item, Receipt, Store
+from app.models import Receipt, Store
 
 
 @pytest.fixture
 async def receipt_generator(db_session):
-
     async def _receipt_generator(
         store_name: str = "test",
         receipt_date: datetime.date | None = None,

@@ -26,10 +26,10 @@ class ReceiptRepository:
 
     async def count(self, store_ids: int | list[int] | None = None) -> int:
         statement = select(func.count(Receipt.id))
-        if type(store_ids) == list:
+        if type(store_ids) is list:
             store_ids = [int(x) for x in store_ids]
             statement = statement.where(Receipt.store_id.in_(store_ids))
-        elif type(store_ids) == int:
+        elif type(store_ids) is int:
             statement = statement.where(Receipt.store_id == store_ids)
         return await self.db_session.scalar(statement)  # type: ignore
 
@@ -46,13 +46,13 @@ class ReceiptRepository:
             .offset((page - 1) * configs.PAGINATE_PER_PAGE)
             .order_by(Receipt.date.desc())
         )
-        if type(store_ids) == list and len(store_ids) > 1:
+        if type(store_ids) is list and len(store_ids) > 1:
             store_ids = [int(x) for x in store_ids]
             statement = statement.where(Receipt.store_id.in_(store_ids))
-        elif type(store_ids) == int or (
-            type(store_ids) == list and len(store_ids) == 1
+        elif type(store_ids) is int or (
+            type(store_ids) is list and len(store_ids) == 1
         ):
-            if type(store_ids) == list:
+            if type(store_ids) is list:
                 store_ids = store_ids[0]
             statement = statement.where(Receipt.store_id == store_ids)
 
