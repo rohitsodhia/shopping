@@ -23,14 +23,20 @@ repos:
     rev: 1.0.1
     hooks:
       - id: run-in-subdirectory
-        alias: black
-        name: Format server code with Black
-        args: ["python", "uv run black"]
+        alias: ruff
+        name: Format python code with ruff
+        args: ["python", "uv run ruff --fix"]
         types: [ python ]
         files: ^src/
-      - id: run-in-subdirectory
-        alias: isort
-        name: Format server code with isort
-        args: ["python", "uv run isort"]
-        types: [ text ]
-        files: ^src/
+      # - id: run-in-subdirectory
+      #   alias: black
+      #   name: Format server code with Black
+      #   args: ["python", "uv run black"]
+      #   types: [ python ]
+      #   files: ^src/
+      # - id: run-in-subdirectory
+      #   alias: isort
+      #   name: Format server code with isort
+      #   args: ["python", "uv run isort"]
+      #   types: [ text ]
+      #   files: ^src/

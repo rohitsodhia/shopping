@@ -1,11 +1,10 @@
-import datetime
 import random
 
 import pytest
 
 from app.models import Item, Purchase
 
-from ..generators import receipt_generator
+from ..generators import receipt_generator  # noqa: F401  # Test fixture
 
 pytestmark = pytest.mark.anyio
 

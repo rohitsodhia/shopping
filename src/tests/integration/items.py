@@ -57,7 +57,7 @@ async def test_get_item_success(authed_client, db_session):
 
 
 async def test_get_item_not_found(authed_client):
-    response = await authed_client.get(f"/api/items/1")
+    response = await authed_client.get("/api/items/1")
     assert response.status_code == 404
 
 

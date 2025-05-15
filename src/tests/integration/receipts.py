@@ -6,7 +6,7 @@ from sqlalchemy import insert
 from app.configs import configs
 from app.models import Item, Purchase, Receipt, Store
 
-from ..generators import receipt_generator
+from ..generators import receipt_generator  # noqa: F401  # Test fixture
 
 pytestmark = pytest.mark.anyio
 
@@ -109,7 +109,7 @@ async def test_get_receipt_success(authed_client, db_session):
 
 
 async def test_get_receipt_not_found(authed_client):
-    response = await authed_client.get(f"/api/receipts/1")
+    response = await authed_client.get("/api/receipts/1")
     assert response.status_code == 404
 
 

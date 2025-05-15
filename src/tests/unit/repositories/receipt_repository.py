@@ -147,5 +147,5 @@ class TestReceiptRepository:
 
     async def test_update_no_receipt(self, db_session: AsyncSession):
         receipt_repository = ReceiptRepository(db_session)
-        with pytest.raises(NotFound) as e:
+        with pytest.raises(NotFound):
             await receipt_repository.update(id=1, date=datetime.date.today())

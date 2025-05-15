@@ -24,8 +24,8 @@ class TestItemRepository:
     async def test_create_exception_same_name(self, db_session: AsyncSession):
         item_repository = ItemRepository(db_session)
         name = "test"
-        item = await item_repository.create(name=name)
-        with pytest.raises(AlreadyExists) as e:
+        await item_repository.create(name=name)
+        with pytest.raises(AlreadyExists):
             await item_repository.create(name=name)
 
     async def test_count(self, db_session: AsyncSession):
@@ -40,7 +40,7 @@ class TestItemRepository:
 
     async def test_get_all(self, db_session: AsyncSession):
         item_repository = ItemRepository(db_session)
-        items_inserted = await db_session.scalars(
+        await db_session.scalars(
             insert(Item).returning(Item),
             [{"name": "test1"}, {"name": "test2"}, {"name": "item3"}],
         )
@@ -86,7 +86,7 @@ class TestItemRepository:
 
     async def test_update_no_item(self, db_session: AsyncSession):
         item_repository = ItemRepository(db_session)
-        with pytest.raises(NotFound) as e:
+        with pytest.raises(NotFound):
             await item_repository.update(id=1, name="test")
 
     async def test_update_duplicate_item(self, db_session: AsyncSession):
@@ -97,5 +97,5 @@ class TestItemRepository:
         item1, item2 = items_inserted.all()
 
         async with db_session.begin_nested():
-            with pytest.raises(AlreadyExists) as e:
+            with pytest.raises(AlreadyExists):
                 await item_repository.update(id=item2.id, name="test1")

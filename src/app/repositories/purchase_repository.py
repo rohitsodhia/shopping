@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import NotRequired, Sequence, TypedDict
+from typing import Sequence
 
 from sqlalchemy import insert, select
 from sqlalchemy.exc import IntegrityError as SQLAIntegrityError
@@ -30,7 +30,7 @@ class PurchaseRepository:
 
         try:
             await self.db_session.commit()
-        except SQLAIntegrityError as e:
+        except SQLAIntegrityError:
             await self.db_session.rollback()
             raise AlreadyExists(Purchase)
 

@@ -21,7 +21,7 @@ class ItemRepository:
         self.db_session.add(item)
         try:
             await self.db_session.commit()
-        except SQLAIntegrityError as e:
+        except SQLAIntegrityError:
             await self.db_session.rollback()
             raise AlreadyExists(Item)
         return item

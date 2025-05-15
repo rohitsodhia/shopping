@@ -10,7 +10,7 @@ async def validate_jwt(request: Request):
     request.scope["user"] = None
     if token:
         try:
-            jwt_body = jwt.decode(
+            jwt.decode(
                 token,
                 configs.JWT_SECRET_KEY,
                 algorithms=[configs.JWT_ALGORITHM],
@@ -29,7 +29,7 @@ async def check_authorization(request: Request):
     public = getattr(request.scope["route"].endpoint, "is_public", False)
 
     path = request.scope["route"].path
-    if not public and request.scope["user"] == None:
+    if not public and request.scope["user"] is None:
         if not path.startswith("/api/"):
             raise HTTPException(
                 status_code=302,
