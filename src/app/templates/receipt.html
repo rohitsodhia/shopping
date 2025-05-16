@@ -23,10 +23,14 @@
             <ul>
                 <template x-for="purchase in purchases" :key="purchase.id">
                     <li>
-                        <div class="main-row">
+                        <div class="name-wrapper">
                             <span x-text="purchase.item.name" class="purchase-name"></span>
-                            <span>$ <input type="number" step="0.01" min="0" x-model="purchase.price" class="purchase-price" @keyup.prevent.debounce.350ms="updatePurchase(purchase)"></span>
                             <button type="button" class="close-button" @click.prevent="removePurchase(purchase.id)"><img src="{{ url_for('static', path='/images/close.svg') }}"></button>
+                        </div>
+                        <div class="price-wrapper">
+                            $ <input type="number" step="0.01" min="0" x-model="purchase.price" class="purchase-price" @keyup.prevent.debounce.350ms="updatePurchase(purchase)">
+                            <span>/</span>
+                            <input type="text" x-model="purchase.amount" class="purchase-amount" @keyup.prevent.debounce.350ms="updatePurchase(purchase)">
                         </div>
                         <input type="text" x-model="purchase.notes" @keyup.prevent.debounce.350ms="updatePurchase(purchase)" class="purchase-notes" placeholder="Notes">
                     </li>

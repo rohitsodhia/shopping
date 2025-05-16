@@ -135,7 +135,7 @@ textarea {
 
     &::placeholder {
         color: oklab(
-            from var(--background) calc(l + var(--foreground-adjust) * 0.5) a b
+            from var(--background) calc(l + var(--foreground-adjust) * 0.8) a b
         );
         font-style: italic;
     }
@@ -298,21 +298,33 @@ form {
         }
     }
 
-    .main-row {
+    .name-wrapper {
         width: 100%;
         display: flex;
         gap: 0.5em;
+        margin-bottom: 0.5em;
+    }
 
-        .purchase-name {
-            flex-grow: 1;
-            align-self: center;
-        }
+    .purchase-name {
+        flex-grow: 1;
+        align-self: center;
+    }
 
-        .purchase-price {
-            text-align: right;
-            width: 80px;
-            flex-basis: auto;
-        }
+    .price-wrapper {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 0.5em;
+    }
+
+    .purchase-price {
+        text-align: right;
+        width: 80px;
+        flex-basis: auto;
+    }
+
+    .purchase-amount {
+        flex: 1;
     }
 
     .purchase-notes {
