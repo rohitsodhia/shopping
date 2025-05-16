@@ -68,6 +68,7 @@ document.addEventListener('alpine:init', () => {
                     },
                     body: JSON.stringify({
                         price: purchase.price * 100,
+                        amount: purchase.amount,
                         notes: purchase.notes,
                     }),
                 });

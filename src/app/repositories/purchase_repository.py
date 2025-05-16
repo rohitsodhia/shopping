@@ -21,10 +21,15 @@ class PurchaseRepository:
         item_id: int,
         receipt_id: int,
         price: float | None = None,
+        amount: str | None = None,
         notes: str | None = None,
     ) -> Purchase:
         purchase = Purchase(
-            item_id=item_id, receipt_id=receipt_id, price=price, notes=notes
+            item_id=item_id,
+            receipt_id=receipt_id,
+            price=price,
+            amount=amount,
+            notes=notes,
         )
         self.db_session.add(purchase)
 
@@ -74,7 +79,11 @@ class PurchaseRepository:
         return purchases.all()
 
     async def update(
-        self, id: int, price: int | None = None, notes: str | None = None
+        self,
+        id: int,
+        price: int | None = None,
+        amount: str | None = None,
+        notes: str | None = None,
     ) -> Purchase:
         purchase = await self.get_by_id(id)
         if not purchase:
@@ -82,6 +91,8 @@ class PurchaseRepository:
 
         if price is not None:
             purchase.price = price
+        if amount is not None:
+            purchase.amount = amount
         if notes is not None:
             purchase.notes = notes
 

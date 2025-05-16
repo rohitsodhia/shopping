@@ -5,6 +5,7 @@ class NewPurchaseInput(BaseModel):
     item_id: int
     receipt_id: int
     price: int | None = None
+    amount: str | None = None
     notes: str | None = None
 
 
@@ -13,6 +14,7 @@ class Purchase(BaseModel):
     item_id: int
     receipt_id: int
     price: int | None = None
+    amount: str | None = None
     notes: str | None = None
 
 
@@ -27,6 +29,7 @@ class NewPurchaseResponse(BaseModel):
 class NewPurchaseBulkPurchaseInput(BaseModel):
     item_id: int
     price: int | None = None
+    amount: str | None = None
     notes: str | None = None
 
 
@@ -45,6 +48,7 @@ class NewPurchaseBulkResponse(BaseModel):
 
 class UpdatePurchaseInput(BaseModel):
     price: int | None = None
+    amount: str | None = None
     notes: str | None = None
 
 
