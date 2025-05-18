@@ -26,6 +26,7 @@ class Purchase(BaseModel):
     item_id: int
     item: Item
     price: int | None = None
+    amount: str | None = None
     notes: str | None = None
 
 

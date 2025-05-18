@@ -22,6 +22,7 @@ async def add_purchase(
         item_id=purchase_input.item_id,
         receipt_id=purchase_input.receipt_id,
         price=purchase_input.price,
+        amount=purchase_input.amount,
         notes=purchase_input.notes,
     )
 
@@ -66,7 +67,10 @@ async def update_purchase(
     purchase_repository = PurchaseRepository(db_session)
 
     purchase = await purchase_repository.update(
-        purchase_id, price=purchase_input.price, notes=purchase_input.notes
+        purchase_id,
+        price=purchase_input.price,
+        amount=purchase_input.amount,
+        notes=purchase_input.notes,
     )
 
     return {

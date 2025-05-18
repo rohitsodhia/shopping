@@ -5,7 +5,7 @@ from typing import Sequence
 from sqlalchemy import func, select
 from sqlalchemy.exc import IntegrityError as SQLAIntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import contains_eager
 
 from app.configs import configs
 from app.exceptions import AlreadyExists, NotFound
@@ -54,13 +54,21 @@ class ItemRepository:
     async def get_by_id(
         self, item_id: int, include_purchases: bool = False
     ) -> Item | None:
-        statement = select(Item).filter(Item.id == item_id).limit(1)
+        statement = select(Item).filter(Item.id == item_id)
         if include_purchases:
-            statement = statement.options(
-                joinedload(Item.purchases)
-                .joinedload(Purchase.receipt)
-                .joinedload(Receipt.store)
+            statement = (
+                statement.join(Item.purchases)
+                .join(Purchase.receipt)
+                .join(Receipt.store)
+                .options(
+                    contains_eager(Item.purchases)
+                    .contains_eager(Purchase.receipt)
+                    .contains_eager(Receipt.store)
+                )
+                .order_by(Receipt.date.desc())
             )
+        else:
+            statement = statement.limit(1)
         item = await self.db_session.scalar(statement)
         return item
 
