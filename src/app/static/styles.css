@@ -349,25 +349,18 @@ form {
         }
     }
 
-    .main-row {
-        display: flex;
-        align-items: center;
-    }
-
-    .purchase-info {
-        flex-grow: 1;
-
-        & > :first-child {
-            font-size: 1.3em;
-        }
-    }
-
     .purchase-price {
-        width: 100px;
-        flex: 0 0 auto;
+        font-size: 1.3em;
+        font-weight: bold;
     }
 
-    .purchase-notes {
-        margin-top: 0.5em;
+    .purchase-notes,
+    .purchased-at {
+        margin-top: 0.3em;
+    }
+
+    .purchased-at {
+        display: flex;
+        gap: 0.5em;
     }
 }

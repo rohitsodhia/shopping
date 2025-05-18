@@ -29,14 +29,12 @@
             <ul>
                 {% for purchase in item.purchases %}
                 <li>
-                    <div class="main-row">
-                        <div class="purchase-info">
-                            <div class="purchase-store">{{ purchase.receipt.store.name }}</div>
-                            <div>{{ purchase.receipt.date.strftime('%b %-d, %Y') }}</div>
-                        </div>
-                        <div class="purchase-price">$ {{ "{:.2f}".format((purchase.price / 100)) }}</div>
-                    </div>
+                    <div class="purchase-price">$ {{ "{:.2f}".format((purchase.price / 100)) }}{% if purchase.amount %} / {{ purchase.amount }}{% endif %}</div>
                     {% if purchase.notes %}<div class="purchase-notes">{{ purchase.notes }}</div>{% endif %}
+                    <div class="purchased-at">
+                        <div class="purchase-store">{{ purchase.receipt.store.name }}</div> -
+                        <div class="purchase-date">{{ purchase.receipt.date.strftime('%b %-d, %Y') }}</div>
+                    </div>
                 </li>
                 {% endfor %}
             </ul>
