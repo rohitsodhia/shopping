@@ -26,5 +26,5 @@ ENV PATH="/app/.venv/bin:$PATH"
 
 # ENTRYPOINT ["/app/entrypoint.sh"]
 
-CMD [ "uv", "run", "uvicorn", "main:create_app()", "--bind", "0.0.0.0:8000" ]
+CMD [ "uv", "run", "uvicorn", "--factory", "main:create_app", "--host", "0.0.0.0", "--port", "8000" ]
 # CMD ["sleep","infinity"]
