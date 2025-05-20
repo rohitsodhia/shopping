@@ -4,13 +4,6 @@ volumes:
         name: shopping_postgres_db
 
 services:
-    proxy:
-        image: nginx:1.26
-        volumes:
-            - ./docker/nginx/nginx.${ENVIRONMENT}.conf:/etc/nginx/conf.d/site.conf
-        depends_on:
-            - python
-
     python:
         container_name: shopping
         build:
