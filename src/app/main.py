@@ -62,7 +62,7 @@ def create_app(init_db=True) -> FastAPI:
     )
 
     app.mount(
-        "/static",
+        "/",
         StaticFiles(directory=f"{Path(__file__).parent}/static"),
         name="static",
     )
