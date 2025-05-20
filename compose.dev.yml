@@ -1,7 +1,12 @@
 services:
     proxy:
+        image: nginx:1.26
+        volumes:
+            - ./docker/nginx/nginx.${ENVIRONMENT}.conf:/etc/nginx/conf.d/site.conf
         ports:
             - 80:80
+        depends_on:
+            - python
 
     python:
         command: uv run uvicorn --factory main:create_app --host 0.0.0.0 --reload --timeout-keep-alive 600
