@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Sequence
 
-from sqlalchemy import func, select
+from sqlalchemy import and_, func, select
 from sqlalchemy.exc import IntegrityError as SQLAIntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import contains_eager
@@ -57,9 +57,13 @@ class ItemRepository:
         statement = select(Item).filter(Item.id == item_id)
         if include_purchases:
             statement = (
-                statement.join(Item.purchases)
-                .join(Purchase.receipt)
-                .join(Receipt.store)
+                statement.join(
+                    Purchase,
+                    and_(Item.id == Purchase.item_id, Purchase.price.isnot(None)),
+                    isouter=True,
+                )
+                .join(Purchase.receipt, isouter=True)
+                .join(Receipt.store, isouter=True)
                 .options(
                     contains_eager(Item.purchases)
                     .contains_eager(Purchase.receipt)
