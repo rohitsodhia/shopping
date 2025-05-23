@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Sequence
 
-from sqlalchemy import and_, func, select
+from sqlalchemy import func, select
 from sqlalchemy.exc import IntegrityError as SQLAIntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import contains_eager
@@ -58,8 +58,9 @@ class ItemRepository:
         if include_purchases:
             statement = (
                 statement.join(
-                    Purchase,
-                    and_(Item.id == Purchase.item_id, Purchase.price.isnot(None)),
+                    Item.purchases.and_(
+                        Item.id == Purchase.item_id, Purchase.price.isnot(None)
+                    ),
                     isouter=True,
                 )
                 .join(Purchase.receipt, isouter=True)
