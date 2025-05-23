@@ -61,9 +61,7 @@ class ItemRepository:
         if include_purchases:
             statement = (
                 statement.join(
-                    Item.purchases.and_(
-                        Item.id == Purchase.item_id, Purchase.price.isnot(None)
-                    ),
+                    Item.purchases.and_(Purchase.price.isnot(None)),
                     isouter=True,
                 )
                 .join(Purchase.receipt, isouter=True)
