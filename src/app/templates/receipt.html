@@ -6,7 +6,7 @@
         <form id="add-purchase" action="/receipts/{{ receipt.id }}/purchase" method="post">
             <div class="combobox">
                 <div class="combobox-input">
-                    <input type="name" name="name" autocomplete="off" x-model="name" @keyup.prevent.debounce.350ms="updateItems(name)">
+                    <input type="name" name="name" placeholder="Item" autocomplete="off" x-model="name" @keyup.prevent.debounce.350ms="updateItems(name)">
                     <ul>
                         <template x-for="item in items">
                             <li @click="selectItem(item)">

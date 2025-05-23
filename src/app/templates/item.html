@@ -24,16 +24,19 @@
                 </div>
             </form>
         </div>
-        <hr>
         <div id="item-purchase-list">
             <ul>
                 {% for purchase in item.purchases %}
-                <li>
-                    <div class="purchase-price">$ {{ "{:.2f}".format((purchase.price / 100)) }}{% if purchase.amount %} / {{ purchase.amount }}{% endif %}</div>
-                    {% if purchase.notes %}<div class="purchase-notes">{{ purchase.notes }}</div>{% endif %}
-                    <div class="purchased-at">
-                        <div class="purchase-store">{{ purchase.receipt.store.name }}</div> -
-                        <div class="purchase-date">{{ purchase.receipt.date.strftime('%b %-d, %Y') }}</div>
+                <li x-data="{ open: false }">
+                    <div class="purchase-price primary-rounded-item" @click="open = !open">$ {{ "{:.2f}".format((purchase.price / 100)) }}{% if purchase.amount %} / {{ purchase.amount }}{% endif %}{% if purchase.notes %} *{% endif %}</div>
+                    <div class="purchase-details" :class="{ 'open': open }">
+                        <div><div>
+                            {% if purchase.notes %}<div class="purchase-notes">{{ purchase.notes }}</div>{% endif %}
+                            <div class="purchased-at">
+                                <div class="purchase-store">{{ purchase.receipt.store.name }}</div> -
+                                <div class="purchase-date">{{ purchase.receipt.date.strftime('%b %-d, %Y') }}</div>
+                            </div>
+                        </div></div>
                     </div>
                 </li>
                 {% endfor %}

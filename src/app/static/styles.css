@@ -59,18 +59,10 @@ h6 {
 
 /* My CSS */
 :root {
-    --background: #ffffff;
-    --foreground: #171717;
-    --foreground-faded: #17171744;
+    --background: #0a0a0a;
+    --foreground: #ededed;
+    --foreground-faded: #ededed44;
     --foreground-adjust: 0.3;
-}
-
-@media (prefers-color-scheme: dark) {
-    :root {
-        --background: #0a0a0a;
-        --foreground: #ededed;
-        --foreground-faded: #ededed44;
-    }
 }
 
 body {
@@ -195,10 +187,14 @@ button {
         display: flex;
         align-items: center;
         gap: 1em;
-        padding: 0.5em 0;
+        margin-bottom: 1em;
 
-        & > :first-child {
-            font-size: 1.3em;
+        & :first-child {
+            flex-grow: 1;
+        }
+
+        &:last-child {
+            margin-bottom: 0;
         }
     }
 }
@@ -276,6 +272,17 @@ form {
     align-items: center;
 }
 
+.primary-rounded-item {
+    font-size: 1.3em;
+    font-weight: bold;
+    border: 1px solid var(--foreground);
+    border-radius: 1em;
+    background-color: oklab(
+        from var(--foreground) calc(l - var(--foreground-adjust)) a b
+    );
+    padding: 0.3em 0.5em;
+}
+
 #add-purchase {
     display: flex;
     align-items: center;
@@ -337,21 +344,46 @@ form {
     margin-top: 1em;
 
     li {
-        padding-bottom: 0.5em;
-        margin-bottom: 0.5em;
-        border-bottom: 1px solid
-            oklab(from var(--background) calc(l + var(--foreground-adjust)) a b);
+        position: relative;
+        margin-bottom: 1em;
 
         &:last-child {
-            padding-bottom: none;
             margin-bottom: none;
-            border-bottom: none;
         }
     }
 
     .purchase-price {
-        font-size: 1.3em;
-        font-weight: bold;
+        position: relative;
+        z-index: 1;
+    }
+
+    .purchase-details {
+        display: grid;
+        grid-template-rows: 0fr;
+        transition: grid-template-rows 0.4s ease-in-out;
+
+        position: relative;
+        top: -1.5em;
+        border: 1px solid
+            oklab(
+                from var(--foreground) calc(l - var(--foreground-adjust) * 0.8)
+                    a b
+            );
+        border-top: none;
+        border-bottom-left-radius: 1em;
+        border-bottom-right-radius: 1em;
+
+        &.open {
+            grid-template-rows: 1fr;
+        }
+
+        & > div {
+            overflow: hidden;
+
+            & > div {
+                padding: 1.8em 1em 0.5em;
+            }
+        }
     }
 
     .purchase-notes,

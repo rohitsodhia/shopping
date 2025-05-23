@@ -14,7 +14,7 @@
     <div class="list-rows">
         <ul>
             {% for store in stores %}
-            <li>
+            <li class="primary-rounded-item">
                 <span>{{ store.name }}</span>
                 <a href="/stores/{{ store.id }}"><img src="{{ url_for('static', path='/images/edit.svg') }}"></a>
             </li>
