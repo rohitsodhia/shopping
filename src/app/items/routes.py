@@ -13,10 +13,10 @@ items = APIRouter(prefix="/items")
 
 @items.get("", response_class=HTMLResponse)
 async def list_items(
-    request: Request, db_session: DBSessionDependency, page: int = 1, duplicate: int = 0
+    request: Request, db_session: DBSessionDependency, duplicate: int = 0
 ):
     item_repository = ItemRepository(db_session)
-    items = await item_repository.get_all(page=page)
+    items = await item_repository.get_all()
 
     return templates.TemplateResponse(
         request=request,
