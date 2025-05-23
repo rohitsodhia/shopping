@@ -26,4 +26,4 @@ while [ $# -gt 0 ]; do
     shift
 done
 
-docker compose ${composeFiles[@]} up $remainingArgs
+docker compose ${composeFiles[@]} $remainingArgs
