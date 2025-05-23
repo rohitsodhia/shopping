@@ -34,17 +34,20 @@ class ItemRepository:
 
     async def get_all(
         self,
-        page: int = 1,
+        page: int | None = None,
         *,
         name_like: str | None = None,
     ) -> Sequence[Item]:
         statement = select(Item)
 
-        statement = (
-            statement.limit(configs.PAGINATE_PER_PAGE)
-            .offset((page - 1) * configs.PAGINATE_PER_PAGE)
-            .order_by(Item.name)
-        )
+        statement = statement.order_by(Item.name)
+        if page and page < 0:
+            raise ValueError
+        elif page:
+            statement = statement.limit(configs.PAGINATE_PER_PAGE).offset(
+                (page - 1) * configs.PAGINATE_PER_PAGE
+            )
+
         if name_like:
             statement = statement.where(Item.name.like(f"%{name_like}%"))
 
