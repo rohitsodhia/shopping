@@ -59,18 +59,10 @@ h6 {
 
 /* My CSS */
 :root {
-    --background: #ffffff;
-    --foreground: #171717;
-    --foreground-faded: #17171744;
+    --background: #0a0a0a;
+    --foreground: #ededed;
+    --foreground-faded: #ededed44;
     --foreground-adjust: 0.3;
-}
-
-@media (prefers-color-scheme: dark) {
-    :root {
-        --background: #0a0a0a;
-        --foreground: #ededed;
-        --foreground-faded: #ededed44;
-    }
 }
 
 body {
