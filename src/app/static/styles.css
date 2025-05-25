@@ -187,7 +187,7 @@ button {
         display: flex;
         align-items: center;
         gap: 1em;
-        margin-bottom: 1em;
+        padding-block: 0.5em;
 
         & :first-child {
             flex-grow: 1;
@@ -196,6 +196,10 @@ button {
         &:last-child {
             margin-bottom: 0;
         }
+    }
+
+    .new_date:not(:first-of-type) {
+        border-top: 1px solid var(--foreground-faded);
     }
 }
 
