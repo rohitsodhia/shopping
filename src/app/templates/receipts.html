@@ -20,12 +20,12 @@
 
     <div class="list-rows">
         <ul>
-            {% for receipt in receipts %}
-            <li>
+        {% for receipt in receipts %}
+            <li{% if loop.changed(receipt.date) %} class="new_date"{% endif %}>
                 <a href="/receipts/{{ receipt.id }}">{{ receipt.store.name }} - {{ receipt.date.isoformat() }}</a>
                 <a href="/receipts/{{ receipt.id }}/edit"><img src="{{ url_for('static', path='/images/edit.svg') }}"></a>
             </li>
-            {% endfor %}
+        {% endfor %}
         </ul>
     </div>
 {% endblock %}
