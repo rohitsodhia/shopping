@@ -5,11 +5,11 @@ from typing import Sequence
 
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import contains_eager, joinedload
 
 from app.configs import configs
 from app.exceptions import NotFound
-from app.models import Receipt
+from app.models import Receipt, Store
 
 
 class ReceiptRepository:
@@ -42,9 +42,11 @@ class ReceiptRepository:
 
         statement = (
             select(Receipt)
+            .join(Receipt.store)
+            .options(contains_eager(Receipt.store))
             .limit(configs.PAGINATE_PER_PAGE)
             .offset((page - 1) * configs.PAGINATE_PER_PAGE)
-            .order_by(Receipt.date.desc())
+            .order_by(Receipt.date.desc(), Store.name)
         )
         if type(store_ids) is list and len(store_ids) > 1:
             store_ids = [int(x) for x in store_ids]
